@@ -1,31 +1,22 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import { ThemeProvider } from "@material-ui/styles";
-import { createMuiTheme } from "@material-ui/core";
-import HomeScreen from "./screens/HomeScreen";
+import React from 'react';
+import { Provider } from 'react-redux';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#FFF",
-      contrastText: "#3A3A3A",
-    },
-    secondary: {
-      main: "#3185FC",
-      dark: "#034FB9",
-      contrastText: "#FFF",
-    },
-  },
-});
+import './App.css';
+import store from './store';
+// Import views
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <div className="App">
-        <HomeScreen />
-      </div>
-    </ThemeProvider>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<> view here </>} />
+
+          <Route path="*" element={<Navigate to="/"/>} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 }
 
