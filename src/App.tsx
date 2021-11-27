@@ -6,6 +6,7 @@ import { ThemeProvider } from '@material-ui/core';
 import './App.css';
 import store from './store';
 import theme from './utils/theme';
+import Login from './views/login';
 // Import views
 
 function App() {
@@ -15,7 +16,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<> view here </>} />
-
+            <Route path="/login" element={<Login />} />
             <Route path="*" element={<Navigate to="/"/>} />
           </Routes>
         </BrowserRouter>
