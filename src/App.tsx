@@ -1,21 +1,25 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider } from '@material-ui/core';
 
 import './App.css';
 import store from './store';
+import theme from './utils/theme';
 // Import views
 
 function App() {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<> view here </>} />
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<> view here </>} />
 
-          <Route path="*" element={<Navigate to="/"/>} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="*" element={<Navigate to="/"/>} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
     </Provider>
   );
 }
