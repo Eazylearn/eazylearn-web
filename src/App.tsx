@@ -7,6 +7,7 @@ import './App.css';
 import store from './store';
 import theme from './utils/theme';
 import Login from './views/login';
+import ForgotPassword from './views/forgot-password';
 // Import views
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Routes>
             <Route path="/" element={<> view here </>} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="*" element={<Navigate to="/"/>} />
           </Routes>
         </BrowserRouter>

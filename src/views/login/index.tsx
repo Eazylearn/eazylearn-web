@@ -1,4 +1,14 @@
-import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler, useState } from 'react';
+import
+React,
+{
+  ChangeEvent,
+  ChangeEventHandler,
+  FormEvent,
+  FormEventHandler,
+  MouseEventHandler,
+  useState
+}
+from 'react';
 import {
   makeStyles,
   TextField,
@@ -6,9 +16,12 @@ import {
   FormControl,
   InputAdornment,
   IconButton,
-  OutlinedInputProps
+  OutlinedInputProps,
+  Button,
+  Link,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
+import { loginPayload, login } from '../../utils/api';
 
 const useStyles = makeStyles(theme => ({
   loginContainer: {
@@ -46,6 +59,25 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "space-evenly",
   },
+  formContent: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    rowGap: 55,
+  },
+  submit: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    rowGap: 24,
+  },
+  button: {
+    width: 250,
+    height: 45,
+    borderRadius: 20,
+    textDecoration: "none",
+  },
 }));
 
 interface LoginProps {
@@ -73,6 +105,17 @@ const Login: React.FC<LoginProps> = () => {
     setShowPassword(prevValue => !prevValue);
   }
 
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e: FormEvent) => {
+    e.preventDefault();
+    const payload: loginPayload = {
+      username,
+      password,
+    }
+
+    const res = await login(payload);
+    console.log(res); //or do sth later
+  }
+
   return (
     <div className={styles.loginContainer}>
       <div className={styles.content}>
@@ -87,34 +130,50 @@ const Login: React.FC<LoginProps> = () => {
           </span>
         </section>
         <section className={styles.formContainer}>
-          <form className={styles.form}>
+          <form className={styles.form} onSubmit={handleSubmit}>
             <Typography style={{ fontWeight: "bold" }} variant="h4" color="primary">LOGIN</Typography>
-            <Input
-              title="Username"
-              id="username"
-              value={username}
-              placeholder="Input your username here"
-              onChange={(e: ChangeEvent) => handleChangeUsername(e)}
-            />
-            <Input
-              title="Password"
-              id="password"
-              value={password}
-              placeholder="Input your password here"
-              onChange={(e: ChangeEvent) => handleChangePassword(e)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={toggleShowPassword}
-                      edge="end"
-                    >
-                      { showPassword ? <Visibility /> : <VisibilityOff /> }
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-            />
+            <div className={styles.formContent}>
+              <Input
+                title="Username"
+                id="username"
+                value={username}
+                placeholder="Input your username here"
+                onChange={(e: ChangeEvent) => handleChangeUsername(e)}
+              />
+              <Input
+                title="Password"
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                placeholder="Input your password here"
+                onChange={(e: ChangeEvent) => handleChangePassword(e)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={toggleShowPassword}
+                        edge="end"
+                      >
+                        { showPassword ? <Visibility /> : <VisibilityOff /> }
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </div>
+            <div className={styles.submit}>
+              <Button
+                className={styles.button}
+                variant="contained"
+                color="primary"
+                type="submit"
+              >
+                Submit
+              </Button>
+              <Link href="/forgot-password" color="primary">
+                Forgot password?
+              </Link>
+            </div>
           </form>
         </section>
       </div>
@@ -137,6 +196,7 @@ interface InputProps {
   value: string,
   placeholder: string,
   onChange: ChangeEventHandler,
+  type?: string,
   InputProps?: OutlinedInputProps,
 }
 
@@ -146,6 +206,7 @@ const Input: React.FC<InputProps> = ({
   value,
   placeholder,
   onChange,
+  type = "text",
   InputProps,
 }) => {
   const styles = useInputStyles();
@@ -158,7 +219,7 @@ const Input: React.FC<InputProps> = ({
         value={value}
         placeholder={placeholder}
         onChange={onChange}
-        type="text"
+        type={type}
         variant="outlined"
         color="primary"
         InputProps={InputProps}
