@@ -99,3 +99,12 @@ const request = {
  * For example
  * export const getSth = async () => return await request.get("/sth");
  */
+
+export interface loginPayload {
+  username: string,
+  password: string
+}
+
+export const login = async (payload: loginPayload) => {
+  return await request.post('/account/login', payload);
+}
