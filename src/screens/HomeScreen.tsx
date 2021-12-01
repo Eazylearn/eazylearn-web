@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import React, { useState } from "react";
+import BackgroundGradient from "../components/BackgroundGradient";
 import HeaderAdmin from "../components/HeaderAdmin";
 
 const useStyles = makeStyles({
@@ -32,6 +33,7 @@ const HomeScreen = () => {
 
   return (
     <div>
+      <BackgroundGradient />
       <HeaderAdmin currentTab="course" onChangeTab={handleChangeTab} />
       <div className={classes.body}>
         <RandomScreen value={tabValue} index={0}>
