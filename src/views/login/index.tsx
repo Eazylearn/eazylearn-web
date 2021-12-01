@@ -77,6 +77,7 @@ const useStyles = makeStyles(theme => ({
     height: 45,
     borderRadius: 20,
     textDecoration: "none",
+    fontWeight: "bold",
   },
 }));
 
@@ -120,18 +121,18 @@ const Login: React.FC<LoginProps> = () => {
     <div className={styles.loginContainer}>
       <div className={styles.content}>
         <section className={styles.intro}>
-          <Typography style={{ fontWeight: "bold" }} variant="h1" color="secondary">
+          <Typography style={{ fontWeight: "bold", fontSize: 70 }} variant="h1" color="primary">
             TESTING<br></br>
             MADE EASY
           </Typography>
           <span>
-            <Typography style={{ fontWeight: "bold" }} variant="h2" component="span" color="secondary">WITH</Typography>
-            <Typography style={{ marginLeft: 10, fontWeight: "bold" }} variant="h2" component="span" color="primary">EAZYLEARN</Typography>
+            <Typography style={{ fontWeight: "bold" }} variant="h2" component="span" color="primary">WITH</Typography>
+            <Typography style={{ marginLeft: 10, fontWeight: "bold" }} variant="h2" component="span" color="secondary">EAZYLEARN</Typography>
           </span>
         </section>
         <section className={styles.formContainer}>
           <form className={styles.form} onSubmit={handleSubmit}>
-            <Typography style={{ fontWeight: "bold" }} variant="h4" color="primary">LOGIN</Typography>
+            <Typography style={{ fontWeight: "bold" }} variant="h4" color="secondary">LOGIN</Typography>
             <div className={styles.formContent}>
               <Input
                 title="Username"
@@ -165,12 +166,12 @@ const Login: React.FC<LoginProps> = () => {
               <Button
                 className={styles.button}
                 variant="contained"
-                color="primary"
+                color="secondary"
                 type="submit"
               >
                 Submit
               </Button>
-              <Link href="/forgot-password" color="primary">
+              <Link href="/forgot-password" color="secondary">
                 Forgot password?
               </Link>
             </div>
@@ -186,6 +187,9 @@ const useInputStyles = makeStyles(theme => ({
     width: "80%",
     "& fieldset": {
       borderRadius: 20,
+    },
+    "& *": {
+      fontWeight: "bold",
     }
   }
 }))
@@ -221,7 +225,7 @@ const Input: React.FC<InputProps> = ({
         onChange={onChange}
         type={type}
         variant="outlined"
-        color="primary"
+        color="secondary"
         InputProps={InputProps}
       />
     </FormControl>
