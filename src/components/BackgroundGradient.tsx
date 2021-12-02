@@ -2,6 +2,7 @@ function BackgroundGradient() {
   return (
     <div
       style={{
+        zIndex: -1,
         position: "fixed",
         top: 0,
         left: 0,
