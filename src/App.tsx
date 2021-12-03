@@ -6,10 +6,10 @@ import { ThemeProvider } from '@material-ui/core';
 import './App.css';
 import store from './store';
 import theme from './utils/theme';
-import HomeScreen from './screens/HomeScreen';
-import Login from './views/login';
-import ForgotPassword from './views/forgot-password';
 // Import views
+import HomeScreen from './screens/HomeScreen';
+import Login from './screens/login';
+import ForgotPassword from './screens/forgot-password';
 
 function App() {
   return (
