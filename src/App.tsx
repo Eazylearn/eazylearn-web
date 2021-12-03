@@ -10,6 +10,7 @@ import theme from './utils/theme';
 import HomeScreen from './screens/HomeScreen';
 import Login from './screens/login';
 import ForgotPassword from './screens/forgot-password';
+import CourseConfig from './screens/course-config';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/" element={<HomeScreen />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/course/:id" element={<CourseConfig />} />
             <Route path="*" element={<Navigate to="/"/>} />
           </Routes>
         </BrowserRouter>
