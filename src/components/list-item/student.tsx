@@ -5,9 +5,7 @@ import React, { ChangeEventHandler } from 'react';
 
 interface StudentItemProps {
   name: string,
-  status: 
-    | "approved"
-    | "pending",
+  status: string,
   checked: boolean,
   onChange: ChangeEventHandler,
   action?: any,

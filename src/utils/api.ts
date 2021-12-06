@@ -132,12 +132,12 @@ export const getCourse = async (payload: getCoursePayload) => {
         {
           id: 1,
           name: "Dảk",
-          status: "active",
+          status: "approved",
         },
         {
           id: 2,
           name: "Bủh",
-          status: "active",
+          status: "approved",
         },
         {
           id: 3,
