@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/core";
 import React, { useState } from "react";
 import BackgroundGradient from "../components/BackgroundGradient";
+import CourseAdmin from "../components/CourseAdmin";
 import HeaderAdmin from "../components/HeaderAdmin";
 
 const useStyles = makeStyles({
@@ -17,7 +18,7 @@ interface RandomScreenProps {
 }
 function RandomScreen(props: RandomScreenProps) {
   return (
-    <h2 hidden={props.index != props.value}>
+    <h2 hidden={props.index !== props.value}>
       {props.value === props.index && <h2>{props.children}</h2>}
     </h2>
   );
@@ -37,7 +38,9 @@ const HomeScreen = () => {
       <HeaderAdmin currentTab="course" onChangeTab={handleChangeTab} />
       <div className={classes.body}>
         <RandomScreen value={tabValue} index={0}>
-          Introduction to Database
+          <div style={{ padding: "35px 75px" }}>
+            <CourseAdmin />
+          </div>
         </RandomScreen>
         <RandomScreen value={tabValue} index={1}>
           Nhìn Man

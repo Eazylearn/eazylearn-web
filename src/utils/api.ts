@@ -108,3 +108,73 @@ export interface loginPayload {
 export const login = async (payload: loginPayload) => {
   return await request.post('/account/login', payload);
 }
+
+export const getAllCourses = async () => {
+  // return await request.get('/course');
+  const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  await wait(1000);
+  return {
+    status: "OK",
+    courses: [
+      {
+        id: "WB101",
+        name: "WB101 - Introduction to weabooism",
+        semester: 1,
+        academicYear: "2019",
+        studentList: [
+          {
+            id: 1,
+            name: "Dảk",
+            status: "approved",
+          },
+          {
+            id: 2,
+            name: "Bủh",
+            status: "approved",
+          },
+          {
+            id: 3,
+            name: "Lmao",
+            status: "pending",
+          }
+        ],
+        lecturerList: [
+          {
+            id: 1,
+            name: "Hanekawa Tsubasa",
+          }
+        ]
+      },
+      {
+        id: "WB423",
+        name: "WB423 - Weaboo oriented programming",
+        semester: 2,
+        academicYear: "2019",
+        studentList: [
+          {
+            id: 1,
+            name: "Dảk",
+            status: "approved",
+          },
+          {
+            id: 2,
+            name: "Bủh",
+            status: "approved",
+          },
+          {
+            id: 3,
+            name: "Lmao",
+            status: "pending",
+          }
+        ],
+        lecturerList: [
+          {
+            id: 1,
+            name: "Fujiwara Chika",
+          }
+        ]
+      }
+    ]
+  }
+}

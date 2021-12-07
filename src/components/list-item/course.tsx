@@ -1,5 +1,5 @@
-import { makeStyles } from '@material-ui/styles';
-import React from 'react';
+import { makeStyles } from '@material-ui/core';
+import React, { MouseEventHandler } from 'react';
 import Typography from '@material-ui/core/Typography'
 
 
@@ -8,6 +8,7 @@ interface CourseItemProps {
   name: string,
   lecturers: Array<string>,
   numStudents: number,
+  onClick: MouseEventHandler,
 }
 
 const useStyles = makeStyles(theme => ({
@@ -16,6 +17,12 @@ const useStyles = makeStyles(theme => ({
     padding: 36,
     boxShadow: "0px 6px 4px rgba(49, 133, 252, 0.24)",
     borderRadius: 15,
+    boxSizing: "border-box",
+    border: "2px solid",
+    borderColor: "transparent",
+    "&:hover": {
+      borderColor: theme.palette.secondary.main,
+    }
   },
   content: {
     display: "flex",
@@ -37,11 +44,12 @@ const CourseItem: React.FC<CourseItemProps> = ({
   name,
   lecturers,
   numStudents,
+  onClick
 }) => {
   const styles = useStyles();
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onClick={onClick}>
       <div className={styles.content}>
         <Typography style={{ fontWeight: "bold" }} variant="h4" color="initial">
           {name}
