@@ -90,7 +90,7 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
     const _getCourse = async (id: string) => {
       try {
         const res = await getCourse({ id });
-        if (res.course) {
+        if (res.status === "OK") {
           setCourse(res.course);
         }
         else {
@@ -104,6 +104,7 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
     }
 
     if (id)
+    // TODO: returned data is missing
       _getCourse(id);
   }, [id]);
 

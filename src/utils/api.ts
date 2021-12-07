@@ -6,6 +6,11 @@ const instance = axios.create({
   timeout: 2000,
 });
 
+instance.interceptors.response.use(
+  (res) => res.data,
+  (err) => err.response.data,
+);
+
 const request = {
   get: async (url: string, params: any = {}) => {
     try {
@@ -123,6 +128,7 @@ export const getCourse = async (payload: getCoursePayload) => {
   const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
   await wait(1000);
   return {
+    status: "OK",
     course: {
       id: payload.id,
       name: "CS161 - Good ol' days",
