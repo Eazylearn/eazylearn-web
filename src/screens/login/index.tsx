@@ -6,6 +6,7 @@ React,
   FormEvent,
   FormEventHandler,
   MouseEventHandler,
+  useEffect,
   useState
 }
 from 'react';
@@ -22,6 +23,9 @@ import {
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { loginPayload, login } from '../../utils/api';
+import { connect } from 'react-redux';
+import { AuthProps, saveAuth } from '../../reducers/auth';
+import { RootStateProps } from '../../reducers';
 
 const useStyles = makeStyles(theme => ({
   loginContainer: {
@@ -81,11 +85,23 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface LoginProps {
+interface ConnectedLoginProps {
 
 }
+interface LoginProps extends LoginStateProps, LoginDispatchProps, ConnectedLoginProps {};
 
-const Login: React.FC<LoginProps> = () => {
+interface LoginStateProps {
+  auth: AuthProps,
+}
+
+interface LoginDispatchProps {
+  saveAuth: typeof saveAuth,
+}
+
+const Login: React.FC<LoginProps> = ({
+  auth,
+  saveAuth,
+}) => {
   const styles = useStyles();
 
   const [username, setUsername] = useState("");
@@ -114,8 +130,19 @@ const Login: React.FC<LoginProps> = () => {
     }
 
     const res = await login(payload);
-    console.log(res); //or do sth later
+    console.log(res);
+    if (res.status === "OK") {
+      window.localStorage.setItem("access_token", res.token);
+      saveAuth(res.token);
+      window.location.href = "/";
+    }
   }
+
+  useEffect(() => {
+    if (auth.token !== "") {
+      window.location.href = "/";
+    }
+  }, [auth.token]);
 
   return (
     <div className={styles.loginContainer}>
@@ -182,6 +209,8 @@ const Login: React.FC<LoginProps> = () => {
   )
 }
 
+const ConnectedLogin: React.FC<ConnectedLoginProps> = connect((state: RootStateProps) => ({ auth: state.auth }), { saveAuth })(Login);
+
 const useInputStyles = makeStyles(theme => ({
   formControl: {
     width: "80%",
@@ -232,4 +261,4 @@ const Input: React.FC<InputProps> = ({
   )
 }
 
-export default Login
+export default ConnectedLogin;

@@ -32,18 +32,6 @@ const theme = createTheme({
     },
   },
   overrides: {
-    MuiButton: {
-      containedPrimary: {
-        backgroundColor: blue,
-        color: white,
-        fontSize: 24,
-        fontWeight: 'bold',
-        textTransform: 'none',
-        '&:hover': {
-          backgroundColor: blue,
-        }
-      },
-    },
     MuiAppBar: {
       root: {
         boxShadow: "0 0",
