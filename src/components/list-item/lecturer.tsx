@@ -1,6 +1,5 @@
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, Typography, makeStyles } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
-import { makeStyles } from '@material-ui/styles';
 import React from 'react';
 
 interface LecturerItemProps {
@@ -16,6 +15,11 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 20,
     display: "grid",
     gridTemplateColumns: "1fr 50px",
+    border: "2px solid",
+    borderColor: "transparent",
+    "&:hover": {
+      borderColor: theme.palette.secondary.main,
+    }
   },
   content: {
     display: "inline-flex",

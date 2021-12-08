@@ -230,3 +230,52 @@ export const getAllCourses = async () => {
     ]
   }
 }
+
+export const getAllLecturers = async () => {
+  const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  await wait(1000);
+  return {
+    status: "OK",
+    lecturers: [
+      {
+        id: 1,
+        name: "Fujiwara Chika",
+      },
+      {
+        id: 2,
+        name: "Hanekawa Tsubasa",
+      },
+      {
+        id: 3,
+        name: "Sakurajima Mai",
+      }
+    ]
+  }
+}
+
+export const getAllStudents = async () => {
+  const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  await wait(1000);
+  return {
+    status: "OK",
+    students: [
+      {
+        id: 1,
+        name: "Dảk",
+        status: "approved",
+      },
+      {
+        id: 2,
+        name: "Bủh",
+        status: "approved",
+      },
+      {
+        id: 3,
+        name: "Lmao",
+        status: "pending",
+      }
+    ]
+  }
+}

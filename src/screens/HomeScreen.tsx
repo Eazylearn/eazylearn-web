@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import BackgroundGradient from "../components/BackgroundGradient";
 import CourseAdmin from "../components/CourseAdmin";
 import HeaderAdmin from "../components/HeaderAdmin";
+import LecturerAdmin from "../components/LecturerAdmin";
+import StudentAdmin from "../components/StudentAdmin";
 
 const useStyles = makeStyles({
   body: {
@@ -44,14 +46,14 @@ const HomeScreen = () => {
           </div>
         </RandomScreen>
         <RandomScreen value={tabValue} index={1}>
-          <h2>
-            Nhìn Man
-          </h2>
+          <div style={{ padding: "35px 75px" }}>
+            <LecturerAdmin />
+          </div>
         </RandomScreen>
         <RandomScreen value={tabValue} index={2}>
-          <h2>
-            Lê Gia Bảo
-          </h2>
+          <div style={{ padding: "35px 75px" }}>
+            <StudentAdmin />
+          </div>
         </RandomScreen>
       </div>
     </div>
