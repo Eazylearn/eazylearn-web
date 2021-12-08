@@ -1,11 +1,12 @@
 import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react';
 import { makeStyles, TextField, Typography, Button, InputAdornment } from '@material-ui/core';
-import { Navigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { getCourse } from '../../utils/api';
 import { Add, KeyboardArrowDown, Search } from '@material-ui/icons';
 import StudentItem from '../../components/list-item/student';
 import LecturerItem from '../../components/list-item/lecturer';
 import { Course, CourseLecturer, CourseStudent } from '../../utils/types';
+import history from '../../utils/history';
 
 interface CourseConfigProps {
 
@@ -59,7 +60,7 @@ const useStyles = makeStyles(theme => ({
 const CourseConfig: React.FC<CourseConfigProps> = () => {
   
   const styles = useStyles();
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const [course, setCourse] = useState<Course | null>(null);
   const [invalid, setInvalid] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -108,6 +109,7 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
     return (<></>);
 
   if (invalid) {
+    setTimeout(() => history.push("/"), 1000);
     return (
       <>
       {/* TODO: needs a better way to inform */}
@@ -117,7 +119,6 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
         <Typography variant="body1" color="initial">
           Redirecting you to homepage...
         </Typography>
-        <Navigate to="/" />
       </>
     )
   }

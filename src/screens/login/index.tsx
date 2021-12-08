@@ -26,6 +26,7 @@ import { loginPayload, login } from '../../utils/api';
 import { connect } from 'react-redux';
 import { AuthProps, saveAuth } from '../../reducers/auth';
 import { RootStateProps } from '../../reducers';
+import history from '../../utils/history';
 
 const useStyles = makeStyles(theme => ({
   loginContainer: {
@@ -134,13 +135,13 @@ const Login: React.FC<LoginProps> = ({
     if (res.status === "OK") {
       window.localStorage.setItem("access_token", res.token);
       saveAuth(res.token);
-      window.location.href = "/";
+      history.push("/");
     }
   }
 
   useEffect(() => {
     if (auth.token !== "") {
-      window.location.href = "/";
+      history.push("/");
     }
   }, [auth.token]);
 

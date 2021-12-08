@@ -4,7 +4,7 @@ import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler, useEffect, u
 import { getAllCourses } from '../utils/api';
 import { Course } from '../utils/types';
 import CourseItem from './list-item/course';
-import { Navigate } from 'react-router';
+import history from '../utils/history';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -129,7 +129,7 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
                 name={course?.name || ""}
                 lecturers={course?.lecturerList.map(l => l.name) || []}
                 numStudents={course?.studentList.length || 0}
-                onClick={() => window.location.href=`/course/${course.id}`}
+                onClick={() => history.push(`/course/${course.id}`)}
               />
             ))
           }
