@@ -12,16 +12,17 @@ const useStyles = makeStyles({
 });
 
 interface RandomScreenProps {
-  children?: React.ReactNode;
+  children: JSX.Element,
   value: any; // 0: Course    1: Lecturer     2: Student
   index: any;
 }
-function RandomScreen(props: RandomScreenProps) {
-  return (
-    <h2 hidden={props.index !== props.value}>
-      {props.value === props.index && <h2>{props.children}</h2>}
-    </h2>
-  );
+const RandomScreen: React.FC<RandomScreenProps> = (props: RandomScreenProps) => {
+  if (props.index === props.value) {
+    return props.children;
+  }
+  else {
+    return <></>
+  }
 }
 
 const HomeScreen = () => {
@@ -43,10 +44,14 @@ const HomeScreen = () => {
           </div>
         </RandomScreen>
         <RandomScreen value={tabValue} index={1}>
-          Nhìn Man
+          <h2>
+            Nhìn Man
+          </h2>
         </RandomScreen>
         <RandomScreen value={tabValue} index={2}>
-          Lê Gia Bảo
+          <h2>
+            Lê Gia Bảo
+          </h2>
         </RandomScreen>
       </div>
     </div>
