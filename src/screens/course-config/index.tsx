@@ -5,6 +5,7 @@ import { getCourse } from '../../utils/api';
 import { Add, KeyboardArrowDown, Search } from '@material-ui/icons';
 import StudentItem from '../../components/list-item/student';
 import LecturerItem from '../../components/list-item/lecturer';
+import { Course, CourseLecturer, CourseStudent } from '../../utils/types';
 
 interface CourseConfigProps {
 
@@ -55,32 +56,13 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export interface Course {
-  id: string
-  name: string,
-  academicYear: string,
-  semester: number,
-  studentList: Array<CourseStudent>,
-  lecturerList: Array<CourseLecturer>,
-}
-
-export interface CourseStudent {
-  id: number
-  name: string,
-  status: string,
-}
-
-export interface CourseLecturer {
-  id: number,
-  name: string,
-}
-
 const CourseConfig: React.FC<CourseConfigProps> = () => {
   
   const styles = useStyles();
   const { id } = useParams();
   const [course, setCourse] = useState<Course | null>(null);
   const [invalid, setInvalid] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [seed, setSeed] = useState(0);
 
   // For the better cause ;)
