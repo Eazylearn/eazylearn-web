@@ -1,10 +1,10 @@
+import { Button, CircularProgress, InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import { KeyboardArrowDown, Search } from '@material-ui/icons';
-import { InputAdornment, TextField, Button, makeStyles, CircularProgress } from '@material-ui/core';
 import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react';
-import { getAllCourses } from '../utils/api';
-import { Course } from '../utils/types';
-import CourseItem from './list-item/course';
-import history from '../utils/history';
+import { getAllStudents } from '../utils/api';
+import { CourseStudent } from '../utils/types';
+import StudentItem from './list-item/student';
+
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -47,21 +47,21 @@ const useStyles = makeStyles(theme => ({
     alignItems: "stretch",
     rowGap: 25,
   }
-}));
+}))
 
-interface CourseAdminProps {
+interface StudentAdminProps {
 
 }
 
-const CourseAdmin: React.FC<CourseAdminProps> = () => {
+const StudentAdmin: React.FC<StudentAdminProps> = () => {
   const styles = useStyles();
 
-  const [courseList, setCourseList] = useState< Array<Course> >([]);
-  const [shownList, setShownList] = useState< Array<Course> >([]);
+  const [studentList, setStudentList] = useState< Array<CourseStudent> >([]);
+  const [shownList, setShownList] = useState< Array<CourseStudent> >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchTimeout, setSearchTimeout] = useState<number>(0);
 
-  const searchHandler = (text: string) => (value: Course): boolean => {
+  const searchHandler = (text: string) => (value: CourseStudent): boolean => {
     return value.name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
   }
 
@@ -69,20 +69,17 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
     const searchText = (event.target as HTMLInputElement).value;
     if (searchTimeout)
       clearTimeout(searchTimeout);
-    setSearchTimeout(window.setTimeout(() => setShownList(courseList.filter(searchHandler(searchText))), 500));
-  }
-
-  const handleClickAction: MouseEventHandler = () => {
-
+    setSearchTimeout(window.setTimeout(() => setShownList(studentList.filter(searchHandler(searchText))), 500));
   }
 
   useEffect(() => {
-    const _getCourses = async () => {
+    const _getStudents = async () => {
       setLoading(true);
-      const res = await getAllCourses();
+
+      const res = await getAllStudents();
       if (res.status === "OK") {
-        setCourseList(res.courses);
-        setShownList(res.courses);
+        setStudentList(res.students);
+        setShownList(res.students);
       }
       else {
         // alert error message
@@ -91,8 +88,16 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
       setLoading(false);
     }
 
-    _getCourses();
+    _getStudents();
   }, [])
+
+  const handleClickAction: MouseEventHandler = () => {
+
+  }
+
+  const handleCheckStudent = (id: number): ChangeEventHandler => (event: ChangeEvent): void => {
+    // do sth
+  }
 
   return (
     <section className={styles.container}>
@@ -124,13 +129,13 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
           {
             loading ? (
               <CircularProgress color="secondary" />
-            ) : shownList.map((course, ind) => (
-              <CourseItem
+            ) : shownList.map((student, ind) => (
+              <StudentItem
                 key={ind}
-                name={course?.name || ""}
-                lecturers={course?.lecturerList.map(l => l.name) || []}
-                numStudents={course?.studentList.length || 0}
-                onClick={() => history.push(`/course/${course.id}`)}
+                name={student.name}
+                status={student.status}
+                checked
+                onChange={handleCheckStudent(student.id)}
               />
             ))
           }
@@ -140,4 +145,4 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
   )
 }
 
-export default CourseAdmin;
+export default StudentAdmin;

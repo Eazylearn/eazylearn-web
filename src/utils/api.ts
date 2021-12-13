@@ -1,9 +1,15 @@
 import axios from 'axios';
+import { Course } from './types';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_ADDRESS,
   timeout: 2000,
 });
+
+instance.interceptors.response.use(
+  (res) => res.data,
+  (err) => err.response.data,
+);
 
 const request = {
   get: async (url: string, params: any = {}) => {
@@ -109,6 +115,52 @@ export const login = async (payload: loginPayload) => {
   return await request.post('/account/login', payload);
 }
 
+export interface getCoursePayload {
+  id: string,
+}
+
+export interface getCourseResponse {
+  course: Course,
+}
+
+export const getCourse = async (payload: getCoursePayload) => {
+  // return await request.get('/course', payload);
+  const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  await wait(1000);
+  return {
+    status: "OK",
+    course: {
+      id: payload.id,
+      name: "CS161 - Good ol' days",
+      semester: 1,
+      academicYear: "2019",
+      studentList: [
+        {
+          id: 1,
+          name: "Dảk",
+          status: "approved",
+        },
+        {
+          id: 2,
+          name: "Bủh",
+          status: "approved",
+        },
+        {
+          id: 3,
+          name: "Lmao",
+          status: "pending",
+        }
+      ],
+      lecturerList: [
+        {
+          id: 1,
+          name: "Adudakwa",
+        }
+      ]
+    }
+  };
+};
+
 export const getAllCourses = async () => {
   // return await request.get('/course');
   const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -174,6 +226,55 @@ export const getAllCourses = async () => {
             name: "Fujiwara Chika",
           }
         ]
+      }
+    ]
+  }
+}
+
+export const getAllLecturers = async () => {
+  const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  await wait(1000);
+  return {
+    status: "OK",
+    lecturers: [
+      {
+        id: 1,
+        name: "Fujiwara Chika",
+      },
+      {
+        id: 2,
+        name: "Hanekawa Tsubasa",
+      },
+      {
+        id: 3,
+        name: "Sakurajima Mai",
+      }
+    ]
+  }
+}
+
+export const getAllStudents = async () => {
+  const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  await wait(1000);
+  return {
+    status: "OK",
+    students: [
+      {
+        id: 1,
+        name: "Dảk",
+        status: "approved",
+      },
+      {
+        id: 2,
+        name: "Bủh",
+        status: "approved",
+      },
+      {
+        id: 3,
+        name: "Lmao",
+        status: "pending",
       }
     ]
   }

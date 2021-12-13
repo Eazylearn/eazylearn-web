@@ -1,10 +1,10 @@
+import { Button, CircularProgress, InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import { KeyboardArrowDown, Search } from '@material-ui/icons';
-import { InputAdornment, TextField, Button, makeStyles, CircularProgress } from '@material-ui/core';
 import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react';
-import { getAllCourses } from '../utils/api';
-import { Course } from '../utils/types';
-import CourseItem from './list-item/course';
-import history from '../utils/history';
+import { getAllLecturers } from '../utils/api';
+import { CourseLecturer } from '../utils/types';
+import LecturerItem from './list-item/lecturer';
+
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -47,21 +47,21 @@ const useStyles = makeStyles(theme => ({
     alignItems: "stretch",
     rowGap: 25,
   }
-}));
+}))
 
-interface CourseAdminProps {
+interface LecturerAdminProps {
 
 }
 
-const CourseAdmin: React.FC<CourseAdminProps> = () => {
+const LecturerAdmin: React.FC<LecturerAdminProps> = () => {
   const styles = useStyles();
 
-  const [courseList, setCourseList] = useState< Array<Course> >([]);
-  const [shownList, setShownList] = useState< Array<Course> >([]);
+  const [lecturerList, setLecturerList] = useState< Array<CourseLecturer> >([]);
+  const [shownList, setShownList] = useState< Array<CourseLecturer> >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchTimeout, setSearchTimeout] = useState<number>(0);
 
-  const searchHandler = (text: string) => (value: Course): boolean => {
+  const searchHandler = (text: string) => (value: CourseLecturer): boolean => {
     return value.name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
   }
 
@@ -69,20 +69,17 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
     const searchText = (event.target as HTMLInputElement).value;
     if (searchTimeout)
       clearTimeout(searchTimeout);
-    setSearchTimeout(window.setTimeout(() => setShownList(courseList.filter(searchHandler(searchText))), 500));
-  }
-
-  const handleClickAction: MouseEventHandler = () => {
-
+    setSearchTimeout(window.setTimeout(() => setShownList(lecturerList.filter(searchHandler(searchText))), 500));
   }
 
   useEffect(() => {
-    const _getCourses = async () => {
+    const _getLecturers = async () => {
       setLoading(true);
-      const res = await getAllCourses();
+
+      const res = await getAllLecturers();
       if (res.status === "OK") {
-        setCourseList(res.courses);
-        setShownList(res.courses);
+        setLecturerList(res.lecturers);
+        setShownList(res.lecturers);
       }
       else {
         // alert error message
@@ -91,8 +88,12 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
       setLoading(false);
     }
 
-    _getCourses();
+    _getLecturers();
   }, [])
+
+  const handleClickAction: MouseEventHandler = () => {
+
+  }
 
   return (
     <section className={styles.container}>
@@ -124,13 +125,10 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
           {
             loading ? (
               <CircularProgress color="secondary" />
-            ) : shownList.map((course, ind) => (
-              <CourseItem
+            ) : shownList.map((lecturer, ind) => (
+              <LecturerItem
                 key={ind}
-                name={course?.name || ""}
-                lecturers={course?.lecturerList.map(l => l.name) || []}
-                numStudents={course?.studentList.length || 0}
-                onClick={() => history.push(`/course/${course.id}`)}
+                name={lecturer?.name || ""}
               />
             ))
           }
@@ -140,4 +138,4 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
   )
 }
 
-export default CourseAdmin;
+export default LecturerAdmin;

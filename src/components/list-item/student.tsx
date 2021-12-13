@@ -1,13 +1,10 @@
-import { Checkbox, IconButton, Typography } from '@material-ui/core';
+import { Checkbox, IconButton, Typography, makeStyles } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
-import { makeStyles } from '@material-ui/styles';
 import React, { ChangeEventHandler } from 'react';
 
 interface StudentItemProps {
   name: string,
-  status: 
-    | "approved"
-    | "pending",
+  status: string,
   checked: boolean,
   onChange: ChangeEventHandler,
   action?: any,
@@ -21,6 +18,11 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 20,
     display: "grid",
     gridTemplateColumns: "50px 1fr 50px",
+    border: "2px solid",
+    borderColor: "transparent",
+    "&:hover": {
+      borderColor: theme.palette.secondary.main,
+    }
   },
   checkbox: {
     position: "relative",

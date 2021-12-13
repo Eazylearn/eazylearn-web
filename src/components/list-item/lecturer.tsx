@@ -1,6 +1,5 @@
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, Typography, makeStyles } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
-import { makeStyles } from '@material-ui/styles';
 import React from 'react';
 
 interface LecturerItemProps {
@@ -16,6 +15,11 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 20,
     display: "grid",
     gridTemplateColumns: "1fr 50px",
+    border: "2px solid",
+    borderColor: "transparent",
+    "&:hover": {
+      borderColor: theme.palette.secondary.main,
+    }
   },
   content: {
     display: "inline-flex",
@@ -40,7 +44,7 @@ const LecturerItem: React.FC<LecturerItemProps> = ({
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <Typography style={{ fontWeight: "bold", width: 300, marginRight: 20 }} variant="body1" color="initial">
+        <Typography style={{ fontWeight: "bold", width: 200, marginRight: 20 }} variant="body1" color="initial">
           {name}
         </Typography>
       </div>
