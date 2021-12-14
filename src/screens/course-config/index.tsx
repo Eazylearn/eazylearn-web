@@ -72,7 +72,7 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
   useEffect(() => {
     const _getCourse = async (id: string) => {
       try {
-        const res = await getCourse({ id });
+        const res = await getCourse(id);
         if (res.status === "OK") {
           setCourse(res.course);
         }
@@ -91,7 +91,7 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
       _getCourse(id);
   }, [id]);
 
-  const modifyCourse = (attr: "name"): ChangeEventHandler => (event: ChangeEvent): void => {
+  const modifyCourse = (attr: "course_name"): ChangeEventHandler => (event: ChangeEvent): void => {
     if (course === null)
       return;
 
@@ -130,9 +130,9 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
           color="secondary"
           id="course-name"
           name="course-name"
-          value={course.name}
+          value={course.course_name}
           placeholder="Input the course name"
-          onChange={modifyCourse("name")}
+          onChange={modifyCourse("course_name")}
         />
       </div>
       <div className={styles.courseAction}>
@@ -153,10 +153,10 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
         </Button>
       </div>
       <div className={styles.studentList}>
-        <StudentList studentList={course.studentList} />
+        <StudentList studentList={course.student} />
       </div>
       <div className={styles.lecturerList}>
-        <LecturerList lecturerList={course.lecturerList} />
+        <LecturerList lecturerList={course.lecturer} />
       </div>
     </div>
   )
@@ -215,12 +215,12 @@ const StudentList: React.FC<StudentListProps> = ({
   
   }
 
-  const handleCheckStudent = (id: number): ChangeEventHandler => (event: ChangeEvent): void => {
+  const handleCheckStudent = (id: string): ChangeEventHandler => (event: ChangeEvent): void => {
     // do sth
   }
 
   const searchHandler = (text: string) => (student: CourseStudent): boolean => {
-    return student.name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
+    return student.student_name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
   }
 
   const handleSearch: ChangeEventHandler = (event: ChangeEvent): void => {
@@ -264,10 +264,10 @@ const StudentList: React.FC<StudentListProps> = ({
             list.map((student: CourseStudent, ind) => (
               <StudentItem 
                 key={ind}
-                name={student.name}
+                name={student.student_name}
                 status={student.status}
                 checked={false}
-                onChange={handleCheckStudent(student.id)}
+                onChange={handleCheckStudent(student.student_id)}
               />
             ))
           }
@@ -336,7 +336,7 @@ const LecturerList: React.FC<LecturerListProps> = ({
             lecturerList.map((lecturer, ind) => (
               <LecturerItem
                 key={ind}
-                name={lecturer.name}
+                name={lecturer.lecturer_name}
               />
             ))
           }

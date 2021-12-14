@@ -1,19 +1,22 @@
 export interface Course {
-  id: string
-  name: string,
-  academicYear: string,
+  course_id: string
+  course_name: string,
+  academic_year: string,
   semester: number,
-  studentList: Array<CourseStudent>,
-  lecturerList: Array<CourseLecturer>,
+  student: Array<CourseStudent>,
+  lecturer: Array<CourseLecturer>,
 }
 
 export interface CourseStudent {
-  id: number
-  name: string,
-  status: string,
+  account_id: string,
+  student_id: string,
+  student_name: string,
+  class_id: string,
+  status: "approved",
 }
 
 export interface CourseLecturer {
-  id: number,
-  name: string,
+  account_id: string,
+  lecturer_id: string,
+  lecturer_name: string,
 }

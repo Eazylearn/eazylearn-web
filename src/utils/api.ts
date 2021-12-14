@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Course } from './types';
+import { Course, CourseStudent } from './types';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_ADDRESS,
@@ -115,120 +115,28 @@ export const login = async (payload: loginPayload) => {
   return await request.post('/account/login', payload);
 }
 
-export interface getCoursePayload {
-  id: string,
-}
-
 export interface getCourseResponse {
+  status: string,
   course: Course,
 }
 
-export const getCourse = async (payload: getCoursePayload) => {
-  // return await request.get('/course', payload);
-  const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-  await wait(1000);
-  return {
-    status: "OK",
-    course: {
-      id: payload.id,
-      name: "CS161 - Good ol' days",
-      semester: 1,
-      academicYear: "2019",
-      studentList: [
-        {
-          id: 1,
-          name: "Dảk",
-          status: "approved",
-        },
-        {
-          id: 2,
-          name: "Bủh",
-          status: "approved",
-        },
-        {
-          id: 3,
-          name: "Lmao",
-          status: "pending",
-        }
-      ],
-      lecturerList: [
-        {
-          id: 1,
-          name: "Adudakwa",
-        }
-      ]
-    }
-  };
+export const getCourse = async (id: string): Promise<getCourseResponse> => {
+  return await request.get('/course', { id });
 };
 
-export const getAllCourses = async () => {
-  // return await request.get('/course');
-  const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+interface getAllCoursesResponse {
+  status: string,
+  courses: Array<Course>,
+}
 
-  await wait(1000);
-  return {
-    status: "OK",
-    courses: [
-      {
-        id: "WB101",
-        name: "WB101 - Introduction to weabooism",
-        semester: 1,
-        academicYear: "2019",
-        studentList: [
-          {
-            id: 1,
-            name: "Dảk",
-            status: "approved",
-          },
-          {
-            id: 2,
-            name: "Bủh",
-            status: "approved",
-          },
-          {
-            id: 3,
-            name: "Lmao",
-            status: "pending",
-          }
-        ],
-        lecturerList: [
-          {
-            id: 1,
-            name: "Hanekawa Tsubasa",
-          }
-        ]
-      },
-      {
-        id: "WB423",
-        name: "WB423 - Weaboo oriented programming",
-        semester: 2,
-        academicYear: "2019",
-        studentList: [
-          {
-            id: 1,
-            name: "Dảk",
-            status: "approved",
-          },
-          {
-            id: 2,
-            name: "Bủh",
-            status: "approved",
-          },
-          {
-            id: 3,
-            name: "Lmao",
-            status: "pending",
-          }
-        ],
-        lecturerList: [
-          {
-            id: 1,
-            name: "Fujiwara Chika",
-          }
-        ]
-      }
-    ]
-  }
+/**
+ * 
+ * @param page current page number
+ * @returns 
+ */
+
+export const getAllCourses = async (page: number = 1): Promise<getAllCoursesResponse> => {
+  return await request.get('/course', { page });
 }
 
 export const getAllLecturers = async () => {
@@ -239,42 +147,56 @@ export const getAllLecturers = async () => {
     status: "OK",
     lecturers: [
       {
-        id: 1,
-        name: "Fujiwara Chika",
+        lecturer_id: "1",
+        account_id: "1",
+        lecturer_name: "Fujiwara Chika",
       },
       {
-        id: 2,
-        name: "Hanekawa Tsubasa",
+        lecturer_id: "1",
+        account_id: "1",
+        lecturer_name: "Hanekawa Tsubasa",
       },
       {
-        id: 3,
-        name: "Sakurajima Mai",
+        lecturer_id: "1",
+        account_id: "1",
+        lecturer_name: "Sakurajima Mai",
       }
     ]
   }
 }
 
-export const getAllStudents = async () => {
+interface getAllStudentsResponse {
+  status: string,
+  student: Array<CourseStudent>,
+}
+
+export const getAllStudents = async (): Promise<getAllStudentsResponse> => {
   const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   await wait(1000);
   return {
     status: "OK",
-    students: [
+    student: [
       {
-        id: 1,
-        name: "Dảk",
+        student_id: "1",
+        account_id: "1",
+        class_id: "19CTT2",
+        student_name: "Dảk",
         status: "approved",
       },
       {
-        id: 2,
-        name: "Bủh",
+        student_id: "2",
+        account_id: "2",
+        class_id: "19CTT2",
+        student_name: "Bủh",
         status: "approved",
       },
       {
-        id: 3,
-        name: "Lmao",
-        status: "pending",
+        student_id: "3",
+        account_id: "3",
+        class_id: "19CTT2",
+        student_name: "Lmao",
+        status: "approved",
       }
     ]
   }

@@ -62,7 +62,7 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
   const [searchTimeout, setSearchTimeout] = useState<number>(0);
 
   const searchHandler = (text: string) => (value: CourseStudent): boolean => {
-    return value.name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
+    return value.student_name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
   }
 
   const handleSearch: ChangeEventHandler = (event: ChangeEvent) => {
@@ -78,8 +78,8 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
 
       const res = await getAllStudents();
       if (res.status === "OK") {
-        setStudentList(res.students);
-        setShownList(res.students);
+        setStudentList(res.student);
+        setShownList(res.student);
       }
       else {
         // alert error message
@@ -95,7 +95,7 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
 
   }
 
-  const handleCheckStudent = (id: number): ChangeEventHandler => (event: ChangeEvent): void => {
+  const handleCheckStudent = (id: string): ChangeEventHandler => (event: ChangeEvent): void => {
     // do sth
   }
 
@@ -132,10 +132,10 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
             ) : shownList.map((student, ind) => (
               <StudentItem
                 key={ind}
-                name={student.name}
+                name={student.student_name}
                 status={student.status}
                 checked
-                onChange={handleCheckStudent(student.id)}
+                onChange={handleCheckStudent(student.student_id)}
               />
             ))
           }

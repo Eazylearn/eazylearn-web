@@ -62,7 +62,7 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
   const [searchTimeout, setSearchTimeout] = useState<number>(0);
 
   const searchHandler = (text: string) => (value: Course): boolean => {
-    return value.name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
+    return value.course_name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
   }
 
   const handleSearch: ChangeEventHandler = (event: ChangeEvent) => {
@@ -81,6 +81,7 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
       setLoading(true);
       const res = await getAllCourses();
       if (res.status === "OK") {
+        console.log(res.courses);
         setCourseList(res.courses);
         setShownList(res.courses);
       }
@@ -93,6 +94,8 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
 
     _getCourses();
   }, [])
+
+  useEffect(() => console.log('shownList', shownList), [shownList]);
 
   return (
     <section className={styles.container}>
@@ -127,10 +130,10 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
             ) : shownList.map((course, ind) => (
               <CourseItem
                 key={ind}
-                name={course?.name || ""}
-                lecturers={course?.lecturerList.map(l => l.name) || []}
-                numStudents={course?.studentList.length || 0}
-                onClick={() => history.push(`/course/${course.id}`)}
+                name={course?.course_name || ""}
+                lecturers={course?.lecturer.map(l => l.lecturer_name) || []}
+                numStudents={course?.student.length || 0}
+                onClick={() => history.push(`/course/${course.course_id}`)}
               />
             ))
           }

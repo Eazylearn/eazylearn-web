@@ -62,7 +62,7 @@ const LecturerAdmin: React.FC<LecturerAdminProps> = () => {
   const [searchTimeout, setSearchTimeout] = useState<number>(0);
 
   const searchHandler = (text: string) => (value: CourseLecturer): boolean => {
-    return value.name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
+    return value.lecturer_name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
   }
 
   const handleSearch: ChangeEventHandler = (event: ChangeEvent) => {
@@ -128,7 +128,7 @@ const LecturerAdmin: React.FC<LecturerAdminProps> = () => {
             ) : shownList.map((lecturer, ind) => (
               <LecturerItem
                 key={ind}
-                name={lecturer?.name || ""}
+                name={lecturer?.lecturer_name || ""}
               />
             ))
           }
