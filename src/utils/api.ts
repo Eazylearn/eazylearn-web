@@ -203,7 +203,6 @@ export const getAllStudents = async (): Promise<getAllStudentsResponse> => {
     ]
   }
 }
-
 interface DeleteCourseResponse {
   status: string,
   message: string,
@@ -211,4 +210,20 @@ interface DeleteCourseResponse {
 
 export const deleteCourse = async (id: string): Promise<DeleteCourseResponse> => {
   return await request.delete('/course', { id });
+}
+
+interface UpdateCourseRequest {
+  id: string,
+  name: string,
+  academicYear: string,
+  semester: number,
+}
+
+interface UpdateCourseResponse {
+  status: string,
+  message: any,
+}
+
+export const updateCourse = async (payload: UpdateCourseRequest): Promise<UpdateCourseResponse> => {
+  return await request.put(`/course?id=${payload.id}`, payload);
 }
