@@ -127,16 +127,18 @@ export const getCourse = async (id: string): Promise<getCourseResponse> => {
 interface getAllCoursesResponse {
   status: string,
   courses: Array<Course>,
+  maxPage: number
 }
 
 /**
  * 
+ * @param query query string
  * @param page current page number
  * @returns 
  */
 
-export const getAllCourses = async (page: number = 1): Promise<getAllCoursesResponse> => {
-  return await request.get('/course', { page });
+export const getAllCourses = async (query: string = "", page: number = 0): Promise<getAllCoursesResponse> => {
+  return await request.get('/course/search', { query, page });
 }
 
 export const getAllLecturers = async () => {

@@ -5,6 +5,7 @@ import { getAllCourses } from '../utils/api';
 import { Course } from '../utils/types';
 import CourseItem from './list-item/course';
 import history from '../utils/history';
+import { Pagination } from '@material-ui/lab';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -57,33 +58,39 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
   const styles = useStyles();
 
   const [courseList, setCourseList] = useState< Array<Course> >([]);
-  const [shownList, setShownList] = useState< Array<Course> >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchTimeout, setSearchTimeout] = useState<number>(0);
-
-  const searchHandler = (text: string) => (value: Course): boolean => {
-    return value.course_name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
-  }
+  const [page, setPage] = useState<number>(1);
+  const [maxPage, setMaxPage] = useState<number>(1);
+  const [query, setQuery] = useState<string>("");
 
   const handleSearch: ChangeEventHandler = (event: ChangeEvent) => {
     const searchText = (event.target as HTMLInputElement).value;
     if (searchTimeout)
       clearTimeout(searchTimeout);
-    setSearchTimeout(window.setTimeout(() => setShownList(courseList.filter(searchHandler(searchText))), 500));
+    setSearchTimeout(window.setTimeout(() => {
+      setQuery(searchText);
+      setPage(1);
+      setMaxPage(1);
+    }, 500));
   }
 
   const handleClickAction: MouseEventHandler = () => {
 
   }
 
+  const handleChangePage = (event: ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  }
+
   useEffect(() => {
     const _getCourses = async () => {
       setLoading(true);
-      const res = await getAllCourses();
-      if (res.status === "OK") {
+      const res = await getAllCourses(query, page - 1);
+      if (res.status === "Ok") {
         console.log(res.courses);
         setCourseList(res.courses);
-        setShownList(res.courses);
+        setMaxPage(res.maxPage);
       }
       else {
         // alert error message
@@ -93,9 +100,7 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
     }
 
     _getCourses();
-  }, [])
-
-  useEffect(() => console.log('shownList', shownList), [shownList]);
+  }, [query, page])
 
   return (
     <section className={styles.container}>
@@ -127,17 +132,26 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
           {
             loading ? (
               <CircularProgress color="secondary" />
-            ) : shownList.map((course, ind) => (
+            ) : courseList.map((course, ind) => (
               <CourseItem
                 key={ind}
                 name={course?.course_name || ""}
-                lecturers={course?.lecturer.map(l => l.lecturer_name) || []}
-                numStudents={course?.student.length || 0}
+                lecturers={course?.lecturers.map(l => l.lecturer_name) || []}
+                numStudents={course?.students.length || 0}
                 onClick={() => history.push(`/course/${course.course_id}`)}
               />
             ))
           }
         </div>
+        <Pagination
+          page={page}
+          onChange={handleChangePage}
+          count={maxPage}
+          variant="outlined"
+          color="secondary"
+          showFirstButton
+          showLastButton
+        />
       </div>
     </section>
   )

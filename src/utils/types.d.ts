@@ -3,8 +3,8 @@ export interface Course {
   course_name: string,
   academic_year: string,
   semester: number,
-  student: Array<CourseStudent>,
-  lecturer: Array<CourseLecturer>,
+  students: Array<CourseStudent>,
+  lecturers: Array<CourseLecturer>,
 }
 
 export interface CourseStudent {

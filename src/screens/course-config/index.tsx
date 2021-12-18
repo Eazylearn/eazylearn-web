@@ -153,10 +153,10 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
         </Button>
       </div>
       <div className={styles.studentList}>
-        <StudentList studentList={course.student} />
+        <StudentList studentList={course.students} />
       </div>
       <div className={styles.lecturerList}>
-        <LecturerList lecturerList={course.lecturer} />
+        <LecturerList lecturerList={course.lecturers} />
       </div>
     </div>
   )
