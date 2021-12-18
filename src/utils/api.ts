@@ -203,3 +203,12 @@ export const getAllStudents = async (): Promise<getAllStudentsResponse> => {
     ]
   }
 }
+
+interface DeleteCourseResponse {
+  status: string,
+  message: string,
+}
+
+export const deleteCourse = async (id: string): Promise<DeleteCourseResponse> => {
+  return await request.delete('/course', { id });
+}

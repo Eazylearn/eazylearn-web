@@ -1,8 +1,8 @@
 import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react';
-import { makeStyles, TextField, Typography, Button, InputAdornment } from '@material-ui/core';
+import { makeStyles, TextField, Typography, Button, InputAdornment, IconButton, Modal, Slide, Backdrop, ClickAwayListener } from '@material-ui/core';
 import { useParams } from 'react-router';
-import { getCourse } from '../../utils/api';
-import { Add, KeyboardArrowDown, Search } from '@material-ui/icons';
+import { deleteCourse, getCourse } from '../../utils/api';
+import { Add, KeyboardArrowDown, Search, Settings } from '@material-ui/icons';
 import StudentItem from '../../components/list-item/student';
 import LecturerItem from '../../components/list-item/lecturer';
 import { Course, CourseLecturer, CourseStudent } from '../../utils/types';
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     gridRow: 1,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
   },
   button: {
     width: 100,
@@ -62,7 +62,7 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
   const styles = useStyles();
   const { id } = useParams<{ id: string }>();
   const [course, setCourse] = useState<Course | null>(null);
-  const [invalid, setInvalid] = useState(false);
+  const [openSettings, setOpenSettings] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [seed, setSeed] = useState(0);
 
@@ -77,17 +77,16 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
           setCourse(res.course);
         }
         else {
-          setInvalid(true);
+          history.push("/");
         }
       }
       catch (err) {
         console.error(err);
-        setInvalid(true);
+        history.push("/");
       }
     }
 
     if (id)
-    // TODO: returned data is missing
       _getCourse(id);
   }, [id]);
 
@@ -105,25 +104,24 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
     forceUpdate();
   }
 
+  const handleOpenSettings = () => {
+    setOpenSettings(true);
+  }
+
+  const handleCloseSettings = () => {
+    setOpenSettings(false);
+  }
+
   if (course === null)
     return (<></>);
 
-  if (invalid) {
-    setTimeout(() => history.push("/"), 1000);
-    return (
-      <>
-      {/* TODO: needs a better way to inform */}
-        <Typography style={{ fontWeight: "bold" }} variant="h5" color="secondary">
-          Oops, course not found
-        </Typography>
-        <Typography variant="body1" color="initial">
-          Redirecting you to homepage...
-        </Typography>
-      </>
-    )
-  }
   return (
     <div className={styles.container}>
+      <SettingsPanel
+        open={openSettings}
+        handleClose={handleCloseSettings}
+        id={course.course_id}
+      />
       <div className={styles.name}>
         <TextField
           className={styles.input}
@@ -136,21 +134,9 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
         />
       </div>
       <div className={styles.courseAction}>
-        <Button
-          className={styles.button}
-          variant="contained"
-          color="primary"
-        >
-          Discard
-        </Button>
-        <Button
-          className={styles.button}
-          style={{ boxShadow: "0px 3px 3px rgba(49, 133, 252, 0.24)" }}
-          variant="contained"
-          color="secondary"
-        >
-          Save
-        </Button>
+        <IconButton onClick={handleOpenSettings}>
+          <Settings />
+        </IconButton>
       </div>
       <div className={styles.studentList}>
         <StudentList studentList={course.students} />
@@ -343,6 +329,204 @@ const LecturerList: React.FC<LecturerListProps> = ({
         </div>
       </div>
     </section>
+  )
+}
+
+const useSettingsPanelStyles = makeStyles(theme => ({
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  container: {
+    background: theme.palette.background.paper,
+    width: 400,
+    height: 220,
+    padding: 30,
+    borderRadius: 20,
+    boxShadow: "0px 16px 40px rgba(0, 0, 0, 0.15)",
+  },
+  content: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+  actions: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    rowGap: 15,
+    "& button": {
+      width: 300,
+      fontWeight: "bold",
+    }
+  },
+  delete: {
+    color: "red",
+  }
+}))
+
+interface SettingsPanelProps {
+  open: boolean,
+  handleClose: () => void,
+  id: string
+}
+
+const SettingsPanel: React.FC<SettingsPanelProps> = ({
+  open,
+  handleClose,
+  id,
+}) => {
+  const styles = useSettingsPanelStyles();
+
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
+
+  const handleOpenDelete: MouseEventHandler = () => {
+    setOpenDelete(true);
+  }
+
+  const handleCloseDelete: MouseEventHandler = () => {
+    setOpenDelete(false);
+  }
+
+  return (
+    <Modal
+      className={styles.modal}
+      open={open}
+      BackdropComponent={Backdrop}
+    >
+      <Slide 
+        in={open}
+        direction="down"
+      >
+      <div className={styles.container}>
+        <ClickAwayListener onClickAway={handleClose}>
+          <div className={styles.content}>
+            <DeletePanel
+              open={openDelete}
+              handleClose={handleCloseDelete}
+              id={id}
+            />
+            <Typography variant="h4" color="initial">
+              More settings
+            </Typography>
+            <div className={styles.actions}>
+              <Button
+                className={styles.delete}
+                variant="contained"
+                color="primary"
+                onClick={handleOpenDelete}
+              >
+                Delete course permanently
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleClose}
+              >
+                Close settings  
+              </Button>
+            </div>
+          </div>
+          </ClickAwayListener>
+        </div>
+      </Slide>
+    </Modal>
+  )
+}
+
+const useDeletePanelStyles = makeStyles(theme => ({
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  container: {
+    background: theme.palette.background.paper,
+    width: 610,
+    height: 200,
+    padding: 30,
+    borderRadius: 20,
+    boxShadow: "0px 16px 40px rgba(0, 0, 0, 0.15)",
+  },
+  content: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+  actions: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    columnGap: 15,
+    "& button": {
+      fontWeight: "bold",
+    }
+  },
+  delete: {
+    color: "red",
+  }
+}))
+
+interface DeletePanelProps {
+  open: boolean,
+  handleClose: MouseEventHandler,
+  id: string
+}
+
+const DeletePanel: React.FC<DeletePanelProps> = ({
+  open,
+  handleClose,
+  id
+}) => {
+  const styles = useDeletePanelStyles();
+
+  const handleDeleteCourse = async () => {
+    // await deleteCourse(id);
+    return;
+  }
+
+  return (
+    <Modal
+      open={open}
+      BackdropComponent={Backdrop}
+      className={styles.modal}
+    >
+      <Slide 
+        in={open}
+        direction="down"
+      >
+        <div className={styles.container}>
+          <div className={styles.content}>
+            <Typography variant="h4" color="initial">
+              Are you sure you want to delete this course permanently?
+            </Typography>
+            <div className={styles.actions}>
+              <Button
+                className={styles.delete}
+                variant="contained"
+                color="primary"
+                onClick={handleDeleteCourse}
+              >
+                Yes, delete the course
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleClose}
+              >
+                No
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Slide>
+    </Modal>
   )
 }
 
