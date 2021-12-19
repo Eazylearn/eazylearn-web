@@ -20,6 +20,7 @@ const useStyles = makeStyles(theme => ({
     gridTemplateColumns: "50px 1fr 50px",
     border: "2px solid",
     borderColor: "transparent",
+    transition: "border-color .2s ease-in-out",
     "&:hover": {
       borderColor: theme.palette.secondary.main,
     }

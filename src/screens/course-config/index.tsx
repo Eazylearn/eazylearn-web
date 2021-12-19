@@ -133,10 +133,13 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
     }
 
     setSaving(true);
-    await updateCourse(payload);
-    
+    const res = await updateCourse(course?.course_id, payload);
     setSaving(false);
     setEdit(false);
+
+    if (res.status === "OK") {
+      history.push(`/course/${courseID}`);
+    }
   }
 
   const handleDiscard = () => {

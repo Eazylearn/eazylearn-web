@@ -1,5 +1,6 @@
-import { Backdrop, Button, ClickAwayListener, makeStyles, Modal, Slide, Typography } from '@material-ui/core';
+import { Backdrop, Button, CircularProgress, ClickAwayListener, makeStyles, Modal, Slide, Typography } from '@material-ui/core';
 import React, { MouseEventHandler, useState } from 'react';
+import history from '../../utils/history';
 
 const useSettingsPanelStyles = makeStyles(theme => ({
   modal: {
@@ -151,8 +152,17 @@ const DeletePanel: React.FC<DeletePanelProps> = ({
 }) => {
   const styles = useDeletePanelStyles();
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleDeleteCourse = async () => {
+    setLoading(true);
+
     // await deleteCourse(id);
+    const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    await wait(1000);
+
+    setLoading(false);
+    history.push('/');
     return;
   }
 
@@ -178,7 +188,11 @@ const DeletePanel: React.FC<DeletePanelProps> = ({
                 color="primary"
                 onClick={handleDeleteCourse}
               >
-                Yes, delete the course
+                {
+                  loading ? (
+                    <CircularProgress color="secondary" size="2rem" />
+                  ) : "Yes, delete the course"
+                }
               </Button>
               <Button
                 variant="contained"

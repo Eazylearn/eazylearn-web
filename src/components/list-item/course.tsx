@@ -2,15 +2,6 @@ import { makeStyles } from '@material-ui/core';
 import React, { MouseEventHandler } from 'react';
 import Typography from '@material-ui/core/Typography'
 
-
-
-interface CourseItemProps {
-  name: string,
-  lecturers: Array<string>,
-  numStudents: number,
-  onClick: MouseEventHandler,
-}
-
 const useStyles = makeStyles(theme => ({
   container: {
     width: "100%",
@@ -20,6 +11,7 @@ const useStyles = makeStyles(theme => ({
     boxSizing: "border-box",
     border: "2px solid",
     borderColor: "transparent",
+    transition: "border-color .2s ease-in-out",
     "&:hover": {
       borderColor: theme.palette.secondary.main,
     }
@@ -40,7 +32,16 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+interface CourseItemProps {
+  id: string,
+  name: string,
+  lecturers: Array<string>,
+  numStudents: number,
+  onClick: MouseEventHandler,
+}
+
 const CourseItem: React.FC<CourseItemProps> = ({
+  id,
   name,
   lecturers,
   numStudents,
@@ -52,7 +53,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
     <div className={styles.container} onClick={onClick}>
       <div className={styles.content}>
         <Typography style={{ fontWeight: "bold" }} variant="h4" color="initial">
-          {name}
+          {id} - {name}
         </Typography>
         <div className={styles.divider} />
         <Typography style={{ fontWeight: "bold" }} variant="body1" color="initial">

@@ -135,9 +135,10 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
             ) : courseList.map((course, ind) => (
               <CourseItem
                 key={ind}
-                name={course?.course_name || ""}
-                lecturers={course?.lecturers.map(l => l.lecturer_name) || []}
-                numStudents={course?.students.length || 0}
+                id={course.course_id}
+                name={course.course_name}
+                lecturers={course.lecturers.map(l => l.lecturer_name) || []}
+                numStudents={course.students.length}
                 onClick={() => history.push(`/course/${course.course_id}`)}
               />
             ))

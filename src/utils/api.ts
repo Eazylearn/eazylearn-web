@@ -224,6 +224,6 @@ interface UpdateCourseResponse {
   message: any,
 }
 
-export const updateCourse = async (payload: UpdateCourseRequest): Promise<UpdateCourseResponse> => {
-  return await request.put(`/course?id=${payload.id}`, payload);
+export const updateCourse = async (id: string = "", payload: UpdateCourseRequest): Promise<UpdateCourseResponse> => {
+  return await request.put(`/course?id=${id}`, payload);
 }

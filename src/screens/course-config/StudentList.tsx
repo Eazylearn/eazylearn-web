@@ -1,8 +1,9 @@
 import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler, useState } from 'react';
-import { Button, InputAdornment, makeStyles, TextField, Typography } from "@material-ui/core";
+import { Button, Collapse, InputAdornment, makeStyles, TextField, Typography } from "@material-ui/core";
 import { CourseStudent } from '../../utils/types';
 import { KeyboardArrowDown, Search } from '@material-ui/icons';
 import StudentItem from '../../components/list-item/student';
+import AddStudent from '../../components/AddStudent';
 
 const useStudentListStyle = makeStyles(theme => ({
 	container: {
@@ -18,6 +19,7 @@ const useStudentListStyle = makeStyles(theme => ({
 		padding: 40,
 	},
 	toolContainer: {
+		position: "relative",
 		display: "flex",
 		width: "100%",
 		flexDirection: "row",
@@ -39,6 +41,22 @@ const useStudentListStyle = makeStyles(theme => ({
 	},
 	listContainer: {
 		width: "100%",
+	},
+	actionContainer: {
+		zIndex: 1,
+		position: "absolute",
+		top: 42,
+		right: 0,
+	},
+	actionContent: {
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "flex-end",
+
+		"& button": {
+			fontWeight: "bold",
+			textTransform: "none",
+		}
 	}
 }))
 
@@ -52,9 +70,11 @@ const StudentList: React.FC<StudentListProps> = ({
 	const styles = useStudentListStyle();
 	const [list, setList] = useState(studentList);
 	const [searchTimeout, setSearchTimeout] = useState<number>(0);
+	const [openAction, setOpenAction] = useState<boolean>(false);
+	const [openManualAdd, setOpenManualAdd] = useState<boolean>(false);
 
 	const handleClickAction: MouseEventHandler = () => {
-
+		setOpenAction(prevState => !prevState);
 	}
 
 	const handleCheckStudent = (id: string): ChangeEventHandler => (event: ChangeEvent): void => {
@@ -74,6 +94,10 @@ const StudentList: React.FC<StudentListProps> = ({
 
 	return (
 		<section className={styles.container}>
+			<AddStudent
+				open={openManualAdd}
+				handleClose={() => setOpenManualAdd(false)}
+			/>
 			<div className={styles.content}>
 				<Typography style={{ fontWeight: "bold", width: "100%" }} variant="h5" color="initial">
 					Students
@@ -98,8 +122,30 @@ const StudentList: React.FC<StudentListProps> = ({
 						onClick={handleClickAction}
 						style={{ fontWeight: "bold", borderRadius: 10 }}
 					>
-						Action <KeyboardArrowDown />
+						Action
+						<KeyboardArrowDown 
+							style={{ 
+								transform: `rotate(${openAction ? "180" : "0"}deg)`,
+								transition: "transform .2s ease-in-out",
+							}} 
+						/>
 					</Button>
+					<div className={styles.actionContainer}>
+						<Collapse in={openAction}>
+							<div className={styles.actionContent}>
+								<Button variant="contained" color="primary">
+									Import via csv
+								</Button>
+								<Button
+									variant="contained"
+									color="primary"
+									onClick={() => setOpenManualAdd(true)}
+								>
+									Add manually
+								</Button>
+							</div>
+						</Collapse>
+					</div>
 				</div>
 				<div className={styles.listContainer}>
 					{
