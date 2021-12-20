@@ -7,16 +7,22 @@ export interface Course {
   lecturers: Array<CourseLecturer>,
 }
 
-export interface CourseStudent {
+export interface Student {
   account_id: string,
   student_id: string,
   student_name: string,
   class_id: string,
-  status: "approved",
 }
 
-export interface CourseLecturer {
+export interface CourseStudent extends Student {
+  status: "approved" | "pending",
+}
+
+export interface Lecturer {
   account_id: string,
   lecturer_id: string,
   lecturer_name: string,
+}
+
+export interface CourseLecturer extends Lecturer {
 }

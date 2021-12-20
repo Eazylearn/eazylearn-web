@@ -111,8 +111,8 @@ const useDeletePanelStyles = makeStyles(theme => ({
   },
   container: {
     background: theme.palette.background.paper,
-    width: 630,
-    height: 170,
+    width: 650,
+    height: 150,
     padding: 15,
     borderRadius: 20,
     boxShadow: "0px 16px 40px rgba(0, 0, 0, 0.15)",

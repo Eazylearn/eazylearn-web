@@ -36,9 +36,6 @@ const useStyles = makeStyles(theme => ({
       borderRadius: 20,
       boxShadow: "0px 3px 3px rgba(49, 133, 252, 0.24)",
     },
-    "& *": {
-      fontWeight: "bold",
-    }
   },
   listContainer: {
     width: "100%",
@@ -138,7 +135,8 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
                 id={course.course_id}
                 name={course.course_name}
                 lecturers={course.lecturers.map(l => l.lecturer_name) || []}
-                numStudents={course.students.length}
+                numStudents={course.students.filter(s => s.status !== "pending").length}
+                numPending={course.students.filter(s => s.status === "pending").length}
                 onClick={() => history.push(`/course/${course.course_id}`)}
               />
             ))

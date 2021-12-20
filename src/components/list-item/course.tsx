@@ -37,6 +37,7 @@ interface CourseItemProps {
   name: string,
   lecturers: Array<string>,
   numStudents: number,
+  numPending: number,
   onClick: MouseEventHandler,
 }
 
@@ -45,6 +46,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
   name,
   lecturers,
   numStudents,
+  numPending,
   onClick
 }) => {
   const styles = useStyles();
@@ -56,12 +58,17 @@ const CourseItem: React.FC<CourseItemProps> = ({
           {id} - {name}
         </Typography>
         <div className={styles.divider} />
-        <Typography style={{ fontWeight: "bold" }} variant="body1" color="initial">
+        <Typography variant="body1" color="initial">
           {`Lecturers: ${lecturers.length === 0 ? "none" : lecturers.join(", ")}`}
         </Typography>
-        <Typography style={{ fontWeight: "bold" }} variant="body1" color="initial">
-          Number of students: {numStudents}
-        </Typography>
+        <div style={{ width: "100%", display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+          <Typography variant="body1" color="initial">
+            Number of students: {numStudents}
+          </Typography>
+          <Typography style={{ fontWeight: "bold" }} variant="body1" color="secondary">
+            Wait for approval: {numPending}
+          </Typography>
+        </div>
       </div>
     </div>
   )

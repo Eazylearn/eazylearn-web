@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Course, CourseStudent } from './types';
+import { Course, Student } from './types';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_ADDRESS,
@@ -169,39 +169,40 @@ export const getAllLecturers = async () => {
 
 interface getAllStudentsResponse {
   status: string,
-  student: Array<CourseStudent>,
+  students: Student[],
 }
 
 export const getAllStudents = async (): Promise<getAllStudentsResponse> => {
-  const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  return await request.get('/student');
+  // const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-  await wait(1000);
-  return {
-    status: "OK",
-    student: [
-      {
-        student_id: "1",
-        account_id: "1",
-        class_id: "19CTT2",
-        student_name: "Dảk",
-        status: "approved",
-      },
-      {
-        student_id: "2",
-        account_id: "2",
-        class_id: "19CTT2",
-        student_name: "Bủh",
-        status: "approved",
-      },
-      {
-        student_id: "3",
-        account_id: "3",
-        class_id: "19CTT2",
-        student_name: "Lmao",
-        status: "approved",
-      }
-    ]
-  }
+  // await wait(1000);
+  // return {
+  //   status: "OK",
+  //   student: [
+  //     {
+  //       student_id: "1",
+  //       account_id: "1",
+  //       class_id: "19CTT2",
+  //       student_name: "Dảk",
+  //       status: "approved",
+  //     },
+  //     {
+  //       student_id: "2",
+  //       account_id: "2",
+  //       class_id: "19CTT2",
+  //       student_name: "Bủh",
+  //       status: "approved",
+  //     },
+  //     {
+  //       student_id: "3",
+  //       account_id: "3",
+  //       class_id: "19CTT2",
+  //       student_name: "Lmao",
+  //       status: "approved",
+  //     }
+  //   ]
+  // }
 }
 interface DeleteCourseResponse {
   status: string,

@@ -154,13 +154,17 @@ const Login: React.FC<LoginProps> = ({
             MADE EASY
           </Typography>
           <span>
-            <Typography style={{ fontWeight: "bold" }} variant="h2" component="span" color="primary">WITH</Typography>
-            <Typography style={{ marginLeft: 10, fontWeight: "bold" }} variant="h2" component="span" color="secondary">EAZYLEARN</Typography>
+            <Typography variant="h2" component="span" color="primary">
+              WITH
+            </Typography>
+            <Typography style={{ marginLeft: 10, fontWeight: "bold" }} variant="h2" component="span" color="secondary">
+              EAZYLEARN
+            </Typography>
           </span>
         </section>
         <section className={styles.formContainer}>
           <form className={styles.form} onSubmit={handleSubmit}>
-            <Typography style={{ fontWeight: "bold" }} variant="h4" color="secondary">LOGIN</Typography>
+            <Typography variant="h4" color="secondary">LOGIN</Typography>
             <div className={styles.formContent}>
               <Input
                 title="Username"
@@ -218,9 +222,6 @@ const useInputStyles = makeStyles(theme => ({
     "& fieldset": {
       borderRadius: 20,
     },
-    "& *": {
-      fontWeight: "bold",
-    }
   }
 }))
 

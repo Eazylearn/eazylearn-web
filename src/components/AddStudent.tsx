@@ -43,9 +43,6 @@ const useStyles = makeStyles(theme => ({
 			borderRadius: 20,
 			boxShadow: "0px 3px 3px rgba(49, 133, 252, 0.24)",
 		},
-		"& *": {
-			fontWeight: "bold",
-		}
 	},
   buttons: {
     display: "inline-flex",

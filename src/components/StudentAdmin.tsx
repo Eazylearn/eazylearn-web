@@ -2,7 +2,7 @@ import { Button, CircularProgress, InputAdornment, makeStyles, TextField } from 
 import { KeyboardArrowDown, Search } from '@material-ui/icons';
 import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react';
 import { getAllStudents } from '../utils/api';
-import { CourseStudent } from '../utils/types';
+import { Student } from '../utils/types';
 import StudentItem from './list-item/student';
 
 
@@ -35,9 +35,6 @@ const useStyles = makeStyles(theme => ({
       borderRadius: 20,
       boxShadow: "0px 3px 3px rgba(49, 133, 252, 0.24)",
     },
-    "& *": {
-      fontWeight: "bold",
-    }
   },
   listContainer: {
     width: "100%",
@@ -56,12 +53,12 @@ interface StudentAdminProps {
 const StudentAdmin: React.FC<StudentAdminProps> = () => {
   const styles = useStyles();
 
-  const [studentList, setStudentList] = useState< Array<CourseStudent> >([]);
-  const [shownList, setShownList] = useState< Array<CourseStudent> >([]);
+  const [studentList, setStudentList] = useState<Student[]>([]);
+  const [shownList, setShownList] = useState<Student[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchTimeout, setSearchTimeout] = useState<number>(0);
 
-  const searchHandler = (text: string) => (value: CourseStudent): boolean => {
+  const searchHandler = (text: string) => (value: Student): boolean => {
     return value.student_name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
   }
 
@@ -77,9 +74,10 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
       setLoading(true);
 
       const res = await getAllStudents();
+      console.log('res', res);
       if (res.status === "OK") {
-        setStudentList(res.student);
-        setShownList(res.student);
+        setStudentList(res.students);
+        setShownList(res.students);
       }
       else {
         // alert error message
@@ -133,8 +131,9 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
               <StudentItem
                 key={ind}
                 name={student.student_name}
-                status={student.status}
-                checked
+                id={student.student_id}
+                status=""
+                checked={false}
                 onChange={handleCheckStudent(student.student_id)}
               />
             ))

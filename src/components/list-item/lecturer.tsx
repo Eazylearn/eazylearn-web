@@ -45,7 +45,7 @@ const LecturerItem: React.FC<LecturerItemProps> = ({
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <Typography style={{ fontWeight: "bold", width: 200, marginRight: 20 }} variant="body1" color="initial">
+        <Typography style={{ color: "#3A3A3A", width: 200, marginRight: 20 }} variant="body1" color="initial">
           {name}
         </Typography>
       </div>

@@ -26,10 +26,9 @@ const useStyles = makeStyles(theme => ({
     gridRow: 1,
     height: 50,
     display: "grid",
-    gridTemplateColumns: "100px 30px 1fr",
+    gridTemplateColumns: "120px 30px 1fr",
     "& *": {
       fontSize: 30,
-      fontWeight: "bold",
     }
   },
   input: {
@@ -219,7 +218,7 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
         </IconButton>
       </div>
       <div className={styles.studentList}>
-        <StudentList studentList={course.students} />
+        <StudentList studentList={course.students} courseID={course.course_id} />
       </div>
       <div className={styles.lecturerList}>
         <LecturerList lecturerList={course.lecturers} />

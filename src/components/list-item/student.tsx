@@ -1,17 +1,11 @@
-import { Checkbox, IconButton, Typography, makeStyles } from '@material-ui/core';
-import { Delete } from '@material-ui/icons';
-import React, { ChangeEventHandler } from 'react';
+import { Checkbox, IconButton, Typography, makeStyles, Collapse, ClickAwayListener } from '@material-ui/core';
+import { MoreVert } from '@material-ui/icons';
+import React, { ChangeEventHandler, ReactNode, useState } from 'react';
 
-interface StudentItemProps {
-  name: string,
-  status: string,
-  checked: boolean,
-  onChange: ChangeEventHandler,
-  action?: any,
-}
 
 const useStyles = makeStyles(theme => ({
   container: {
+    position: "relative",
     width: "100%",
     height: 60,
     boxShadow: "0px 3px 3px rgba(49, 133, 252, 0.24)",
@@ -36,47 +30,78 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
   },
   action: {
-    position: "relative",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-  }
+    zIndex: 1,
+  },
+	optionsContainer: {
+		position: "absolute",
+    top: 5,
+		right: 0,
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "flex-end",
+	},
 }))
+
+interface StudentItemProps {
+  name: string,
+  id?: string,
+  status: "approved" | "pending" | "",
+  checked: boolean,
+  onChange: ChangeEventHandler,
+  options?: ReactNode,
+}
 
 const StudentItem: React.FC<StudentItemProps> = ({
   name,
+  id = "",
   status,
   checked,
   onChange,
-  action = null,
+  options = <></>,
 }) => {
 
   const styles = useStyles();
+
+  const [openOptions, setOpenOptions] = useState<boolean>(false);
 
   return (
     <div className={styles.container}>
       <div>
         <Checkbox
+          checked={checked}
           className={styles.checkbox}
           color="secondary"
           onChange={onChange}
         />
       </div>
       <div className={styles.content}>
-        <Typography style={{ fontWeight: "bold", width: 300, marginRight: 20 }} variant="body1" color="initial">
+        <Typography style={{ color: "#3A3A3A", width: 300, marginRight: 20 }} variant="body1" color="initial">
           {name}
         </Typography>
-        <Typography style={{ fontWeight: "bold", color: status === "pending" ? "#F7CB15" : "#00E3AA" }} variant="body1">
-          {status === "pending" ? "Pending" : "Approved"}
-        </Typography>
+        {
+          status.length > 0 ? (
+            <Typography style={{ color: status === "pending" ? "#F7CB15" : "#00E3AA" }} variant="body1">
+              {status === "pending" ? "Pending" : "Approved"}
+            </Typography>
+          ) : (
+            <Typography style={{ color: "#3A3A3A" }} variant="body1">
+              {id}
+            </Typography>
+          )
+        }
       </div>
-      <div>
-        <IconButton
-          className={styles.action}
-          onClick={action}>
-          <Delete />
-        </IconButton>
-      </div>
+      <ClickAwayListener onClickAway={() => setOpenOptions(false)}>
+        <div style={{ zIndex: openOptions ? 2 : 1 }} className={styles.optionsContainer}>
+          <IconButton
+            className={styles.action}
+            onClick={() => setOpenOptions(true)}>
+            <MoreVert />
+          </IconButton>
+          <Collapse in={openOptions}>
+            {options}
+          </Collapse>
+        </div>
+      </ClickAwayListener>
     </div>
   )
 }
