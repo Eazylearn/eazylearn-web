@@ -1,5 +1,5 @@
 import { KeyboardArrowDown, Search } from '@material-ui/icons';
-import { InputAdornment, TextField, Button, makeStyles, CircularProgress } from '@material-ui/core';
+import { InputAdornment, TextField, Button, makeStyles, CircularProgress, ClickAwayListener, Collapse } from '@material-ui/core';
 import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react';
 import { getAllCourses } from '../utils/api';
 import { Course } from '../utils/types';
@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
     padding: 40,
   },
   toolContainer: {
+    position: "relative",
     display: "flex",
     width: "100%",
     flexDirection: "row",
@@ -44,7 +45,26 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     alignItems: "stretch",
     rowGap: 25,
-  }
+  },
+	actionContainer: {
+		zIndex: 1,
+		position: "absolute",
+		top: 0,
+		right: 0,
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "flex-end",
+	},
+	actionContent: {
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "stretch",
+
+		"& button": {
+			fontWeight: "bold",
+			textTransform: "none",
+		}
+	},
 }));
 
 interface CourseAdminProps {
@@ -60,6 +80,7 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
   const [page, setPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
   const [query, setQuery] = useState<string>("");
+	const [openAction, setOpenAction] = useState<boolean>(false);
 
   const handleSearch: ChangeEventHandler = (event: ChangeEvent) => {
     const searchText = (event.target as HTMLInputElement).value;
@@ -72,13 +93,17 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
     }, 500));
   }
 
-  const handleClickAction: MouseEventHandler = () => {
-
-  }
-
   const handleChangePage = (event: ChangeEvent<unknown>, value: number) => {
     setPage(value);
   }
+
+  const handleCreate: MouseEventHandler = () => {
+    history.push('/course/new');
+  }
+
+	const handleClickAction: MouseEventHandler = () => {
+		setOpenAction(prevState => !prevState);
+	}
 
   useEffect(() => {
     const _getCourses = async () => {
@@ -116,14 +141,41 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
             placeholder="Search"
             className={styles.searchBar}
           />
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleClickAction}
-            style={{ fontWeight: "bold", borderRadius: 10 }}
-          >
-            Action <KeyboardArrowDown />
-          </Button>
+          <ClickAwayListener onClickAway={() => setOpenAction(false)}>
+						<div className={styles.actionContainer}>
+							<Button
+								variant="contained"
+								color="secondary"
+								onClick={handleClickAction}
+								style={{ 
+									fontWeight: "bold", 
+									borderRadius: 10, 
+								}}
+							>
+								Action
+								<KeyboardArrowDown 
+									style={{ 
+										transform: `rotate(${openAction ? "180" : "0"}deg)`,
+										transition: "transform .2s ease-in-out",
+									}} 
+								/>
+							</Button>
+							<Collapse in={openAction}>
+									<div className={styles.actionContent}>
+										<Button variant="contained" color="primary">
+											Import via csv
+										</Button>
+										<Button
+											variant="contained"
+											color="primary"
+											onClick={handleCreate}
+										>
+											Create manually
+										</Button>
+									</div>
+							</Collapse>
+						</div>
+					</ClickAwayListener>
         </div>
         <div className={styles.listContainer}>
           {

@@ -228,3 +228,17 @@ interface UpdateCourseResponse {
 export const updateCourse = async (id: string = "", payload: UpdateCourseRequest): Promise<UpdateCourseResponse> => {
   return await request.put(`/course?id=${id}`, payload);
 }
+
+interface CreateCourseRequest extends UpdateCourseRequest {}
+
+interface CreateCourseResponse {
+  status: string,
+  message: Course,
+}
+
+export const createCourse = async (payload: CreateCourseRequest): Promise<CreateCourseResponse> => {
+  const res = await request.post('/course', payload);
+  res.message.lecturers = [];
+  res.message.students = [];
+  return (res as CreateCourseResponse);
+}

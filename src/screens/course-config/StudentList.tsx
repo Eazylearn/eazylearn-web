@@ -51,7 +51,7 @@ const useStudentListStyle = makeStyles(theme => ({
 	actionContent: {
 		display: "flex",
 		flexDirection: "column",
-		alignItems: "flex-end",
+		alignItems: "stretch",
 
 		"& button": {
 			fontWeight: "bold",

@@ -1,8 +1,8 @@
 import React, { ChangeEvent, ChangeEventHandler, useEffect, useState } from 'react';
 import { makeStyles, TextField, Typography, Button, IconButton, CircularProgress } from '@material-ui/core';
 import { useParams } from 'react-router';
-import { getCourse, updateCourse } from '../../utils/api';
-import { Edit, Settings } from '@material-ui/icons';
+import { createCourse, getCourse, updateCourse } from '../../utils/api';
+import { ArrowBack, Edit, Settings } from '@material-ui/icons';
 import { Course } from '../../utils/types';
 import history from '../../utils/history';
 import StudentList from './StudentList';
@@ -26,7 +26,8 @@ const useStyles = makeStyles(theme => ({
     gridRow: 1,
     height: 50,
     display: "grid",
-    gridTemplateColumns: "120px 30px 1fr",
+    columnGap: 20,
+    gridTemplateColumns: "50px 120px 30px 1fr",
     "& *": {
       fontSize: 30,
     }
@@ -107,8 +108,19 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
       }
     }
 
-    if (id)
-      _getCourse(id);
+    if (id) {
+      if (id !== "new")
+        _getCourse(id);
+      else
+        setCourse({
+          course_id: "",
+          course_name: "",
+          academic_year: "2020", // TODO
+          semester: 1, // TODO
+          students: [],
+          lecturers: [],
+        })
+    }
   }, [id]);
   
   const handleChangeName: ChangeEventHandler = (event: ChangeEvent) => {
@@ -132,7 +144,9 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
     }
 
     setSaving(true);
-    const res = await updateCourse(course?.course_id, payload);
+    const res = id === "new" ? 
+      await createCourse(payload) :
+      await updateCourse(course?.course_id, payload);
     setSaving(false);
     setEdit(false);
 
@@ -158,11 +172,14 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
         id={course.course_id}
       />
       <div className={styles.name}>
+        <IconButton onClick={() => history.push('/')}>
+          <ArrowBack fontSize='medium'/>
+        </IconButton>
         <TextField
           className={styles.input}
           color="secondary"
           value={courseID}
-          placeholder="Input the course id"
+          placeholder="ID"
           onChange={handleChangeID}
           disabled={!edit}
         />
@@ -177,7 +194,7 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
           className={styles.input}
           color="secondary"
           value={courseName}
-          placeholder="Input the course name"
+          placeholder="Course name"
           onChange={handleChangeName}
           disabled={!edit}
         />

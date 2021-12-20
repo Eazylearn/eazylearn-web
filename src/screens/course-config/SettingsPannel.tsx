@@ -156,7 +156,7 @@ const DeletePanel: React.FC<DeletePanelProps> = ({
 
   const handleDeleteCourse = async () => {
     setLoading(true);
-
+    // TODO
     // await deleteCourse(id);
     const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
     await wait(1000);
