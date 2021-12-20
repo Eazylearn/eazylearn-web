@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Course, Student } from './types';
+import { Course, Lecturer, Student } from './types';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_ADDRESS,
@@ -141,30 +141,37 @@ export const getAllCourses = async (query: string = "", page: number = 0): Promi
   return await request.get('/course/search', { query, page });
 }
 
-export const getAllLecturers = async () => {
-  const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+interface GetAllLecturersResponse {
+  status: string,
+  lecturers: Lecturer[],
+}
 
-  await wait(1000);
-  return {
-    status: "OK",
-    lecturers: [
-      {
-        lecturer_id: "1",
-        account_id: "1",
-        lecturer_name: "Fujiwara Chika",
-      },
-      {
-        lecturer_id: "1",
-        account_id: "1",
-        lecturer_name: "Hanekawa Tsubasa",
-      },
-      {
-        lecturer_id: "1",
-        account_id: "1",
-        lecturer_name: "Sakurajima Mai",
-      }
-    ]
-  }
+export const getAllLecturers = async (): Promise<GetAllLecturersResponse> => {
+  return await request.get('/lecturer');
+
+  // const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  // await wait(1000);
+  // return {
+  //   status: "OK",
+  //   lecturers: [
+  //     {
+  //       lecturer_id: "1",
+  //       account_id: "1",
+  //       lecturer_name: "Fujiwara Chika",
+  //     },
+  //     {
+  //       lecturer_id: "1",
+  //       account_id: "1",
+  //       lecturer_name: "Hanekawa Tsubasa",
+  //     },
+  //     {
+  //       lecturer_id: "1",
+  //       account_id: "1",
+  //       lecturer_name: "Sakurajima Mai",
+  //     }
+  //   ]
+  // }
 }
 
 interface getAllStudentsResponse {

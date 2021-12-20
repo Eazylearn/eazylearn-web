@@ -61,13 +61,13 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-interface AddStudentProps {
+interface AddLecturerProps {
   open: boolean,
   handleClose: () => void,
   // id course sth sth TODO
 }
 
-const AddStudent: React.FC<AddStudentProps> = ({
+const AddLecturer: React.FC<AddLecturerProps> = ({
   open,
   handleClose
 }) => {
@@ -94,7 +94,7 @@ const AddStudent: React.FC<AddStudentProps> = ({
 
         <section className={styles.container}>
           <Typography className={styles.header} variant="h4" color="initial">
-            Add students manually from database
+            Add lecturers manually from database
           </Typography>
           <div className={styles.toolContainer}>
             <TextField
@@ -136,4 +136,4 @@ const AddStudent: React.FC<AddStudentProps> = ({
   )
 }
 
-export default AddStudent;
+export default AddLecturer;

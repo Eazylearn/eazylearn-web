@@ -74,6 +74,7 @@ const LecturerAdmin: React.FC<LecturerAdminProps> = () => {
       setLoading(true);
 
       const res = await getAllLecturers();
+      console.log(res);
       if (res.status === "OK") {
         setLecturerList(res.lecturers);
         setShownList(res.lecturers);
@@ -89,7 +90,7 @@ const LecturerAdmin: React.FC<LecturerAdminProps> = () => {
   }, [])
 
   const handleClickAction: MouseEventHandler = () => {
-
+    // TODO
   }
 
   return (

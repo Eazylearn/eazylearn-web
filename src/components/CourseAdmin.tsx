@@ -162,7 +162,11 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
 							</Button>
 							<Collapse in={openAction}>
 									<div className={styles.actionContent}>
-										<Button variant="contained" color="primary">
+										<Button
+                      variant="contained"
+                      color="primary"
+                      // onClick={} TODO
+                    >
 											Import via csv
 										</Button>
 										<Button

@@ -1,6 +1,7 @@
 import { Button, makeStyles, Typography } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
-import React from 'react';
+import React, { useState } from 'react';
+import AddLecturer from '../../components/AddLecturer';
 import LecturerItem from '../../components/list-item/lecturer';
 import { CourseLecturer } from '../../utils/types';
 
@@ -44,8 +45,14 @@ const LecturerList: React.FC<LecturerListProps> = ({
 }) => {
   const styles = useLecturerListStyle();
 
+	const [openManualAdd, setOpenManualAdd] = useState<boolean>(false);
+
   return (
     <section className={styles.container}>
+      <AddLecturer
+        open={openManualAdd}
+        handleClose={() => setOpenManualAdd(false)}
+      />
       <div className={styles.content}>
         <div className={styles.header}>
           <Typography style={{ fontWeight: "bold", width: "100%" }} variant="h5" color="initial">
@@ -54,7 +61,9 @@ const LecturerList: React.FC<LecturerListProps> = ({
           <Button
             className={styles.addButton}
             color="secondary"
-            variant="contained">
+            variant="contained"
+            onClick={() => setOpenManualAdd(true)}
+          >
             <Add />
           </Button>
         </div>

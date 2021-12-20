@@ -90,7 +90,7 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
   }, [])
 
   const handleClickAction: MouseEventHandler = () => {
-
+    // TODO
   }
 
   const handleCheckStudent = (id: string): ChangeEventHandler => (event: ChangeEvent): void => {
