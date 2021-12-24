@@ -3,12 +3,16 @@ import { Course, Lecturer, Student } from './types';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_ADDRESS,
-  timeout: 2000,
+  timeout: 5000,
 });
 
 instance.interceptors.response.use(
-  (res) => res.data,
-  (err) => err.response.data,
+  (res) => {
+    return res.data;
+  },
+  (err) => {
+    return err.response.data;
+  }
 );
 
 const request = {
