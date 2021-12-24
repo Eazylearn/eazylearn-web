@@ -49,6 +49,7 @@ interface StudentItemProps {
   checked: boolean,
   onChange: ChangeEventHandler,
   options?: ReactNode,
+  showOptions?: boolean,
 }
 
 const StudentItem: React.FC<StudentItemProps> = ({
@@ -58,6 +59,7 @@ const StudentItem: React.FC<StudentItemProps> = ({
   checked,
   onChange,
   options = <></>,
+  showOptions = true,
 }) => {
 
   const styles = useStyles();
@@ -90,18 +92,22 @@ const StudentItem: React.FC<StudentItemProps> = ({
           )
         }
       </div>
-      <ClickAwayListener onClickAway={() => setOpenOptions(false)}>
-        <div style={{ zIndex: openOptions ? 2 : 1 }} className={styles.optionsContainer}>
-          <IconButton
-            className={styles.action}
-            onClick={() => setOpenOptions(true)}>
-            <MoreVert />
-          </IconButton>
-          <Collapse in={openOptions}>
-            {options}
-          </Collapse>
-        </div>
-      </ClickAwayListener>
+      {
+        showOptions && (
+          <ClickAwayListener onClickAway={() => setOpenOptions(false)}>
+            <div style={{ zIndex: openOptions ? 2 : 1 }} className={styles.optionsContainer}>
+              <IconButton
+                className={styles.action}
+                onClick={() => setOpenOptions(true)}>
+                <MoreVert />
+              </IconButton>
+              <Collapse in={openOptions}>
+                {options}
+              </Collapse>
+            </div>
+          </ClickAwayListener>
+        )
+      }
     </div>
   )
 }

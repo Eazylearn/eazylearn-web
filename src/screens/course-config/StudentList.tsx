@@ -4,7 +4,7 @@ import { CourseStudent } from '../../utils/types';
 import { KeyboardArrowDown, Search } from '@material-ui/icons';
 import StudentItem from '../../components/list-item/student';
 import AddStudent from '../../components/AddStudent';
-import { approveStudents } from '../../utils/api';
+import { approveStudents, removeStudents } from '../../utils/api';
 
 const useStudentListStyle = makeStyles(theme => ({
 	container: {
@@ -57,6 +57,9 @@ const useStudentListStyle = makeStyles(theme => ({
 		"& button": {
 			fontWeight: "bold",
 			textTransform: "none",
+			"& span": {
+				justifyContent: "flex-end",
+			}
 		}
 	},
 	checkActionContainer: {
@@ -79,7 +82,7 @@ const useStudentListStyle = makeStyles(theme => ({
 	},
 }))
 
-interface CheckStudent extends CourseStudent {
+export interface CheckStudent extends CourseStudent {
 	checked: boolean,
 }
 
@@ -142,9 +145,6 @@ const StudentList: React.FC<StudentListProps> = ({
 			courseID,
 		}));
 
-		console.log(payload);
-
-		// do sth after that
 		const res = await approveStudents({ body: payload });
 		if (res.status === "OK") {
 			reload()
@@ -152,8 +152,21 @@ const StudentList: React.FC<StudentListProps> = ({
 		else {
 			// failed
 		}
+	}
 
-		return;
+	const handleRemove = async (student: CheckStudent) => {
+		const payload = [{
+			studentID: student.student_id,
+			courseID,
+		}]
+
+		const res = await removeStudents({ body: payload });
+		if (res.status === "OK") {
+			reload()
+		}
+		else {
+			//failed
+		}
 	}
 
 	const handleSearch: ChangeEventHandler = (event: ChangeEvent): void => {
@@ -174,7 +187,6 @@ const StudentList: React.FC<StudentListProps> = ({
 	}
 
 	useEffect(() => {
-		console.log(studentList);
 		setPendingStudents(studentList
 			.filter(s => s.status === 0)
 			.map(s => ({ ...s, checked: false }))
@@ -190,6 +202,9 @@ const StudentList: React.FC<StudentListProps> = ({
 			<AddStudent
 				open={openManualAdd}
 				handleClose={() => setOpenManualAdd(false)}
+				exclude={studentList.map(s => s.student_id)}
+				courseID={courseID}
+				reload={reload}
 			/>
 			<div className={styles.content}>
 				<Typography style={{ fontWeight: "bold", width: "100%" }} variant="h5" color="initial">
@@ -299,15 +314,25 @@ const StudentList: React.FC<StudentListProps> = ({
 								onChange={handleCheckStudent(student.student_id)}
 								options={(
 									<div className={styles.actionContent}>
-										<Button variant="contained" color="primary">
-											Import via csv
+										<Button
+											variant="contained"
+											color="primary"
+											onClick={() => handleApprove([student])}
+										>
+											Approve
 										</Button>
 										<Button
 											variant="contained"
 											color="primary"
-											onClick={() => setOpenManualAdd(true)}
+											onClick={() => handleRemove(student)}
 										>
-											Add manually
+											Remove from course
+										</Button>
+										<Button
+											variant="contained"
+											color="primary"
+										>
+											More details
 										</Button>
 									</div>
 								)}
@@ -347,15 +372,18 @@ const StudentList: React.FC<StudentListProps> = ({
 								onChange={handleCheckStudent(student.student_id)}
 								options={(
 									<div className={styles.actionContent}>
-										<Button variant="contained" color="primary">
-											Import via csv
+										<Button
+											variant="contained"
+											color="primary"
+											onClick={() => handleRemove(student)}
+										>
+											Remove from course
 										</Button>
 										<Button
 											variant="contained"
 											color="primary"
-											onClick={() => setOpenManualAdd(true)}
 										>
-											Add manually
+											More details
 										</Button>
 									</div>
 								)}

@@ -77,7 +77,7 @@ const request = {
       return err.response ? err.response.data : err;
     }
   },
-  delete: async (url: string, params: any = {}) => {
+  delete: async (url: string, params: any = {}, data: any = {}) => {
     try {
       const parsedParams = Object.keys(params)
         .map((k) => ({ k, v: params[k] }))
@@ -92,6 +92,7 @@ const request = {
             ? `Bearer ${window.localStorage.getItem("access_token")}`
             : "",
         },
+        data,
       });
     } catch (err: any) {
       console.error(err);
@@ -178,23 +179,35 @@ export const createCourse = async (payload: CreateCourseRequest): Promise<Create
   return (res as CreateCourseResponse);
 }
 
-interface ApproveStudentsRequest {
+interface RemoveStudentRequest {
   body: Array<{
     studentID: string,
     courseID: string,
   }>
 }
 
-interface ApproveStudentsResponse {
+interface RemoveStudentResponse {
   status: string,
-  message: Array<{
+  message: any,
+}
+
+export const removeStudents = async (payload: RemoveStudentRequest): Promise<RemoveStudentResponse> => {
+  return await request.delete('/course/remove/student', {}, payload);
+}
+
+interface AssignStudentsRequest {
+  body: Array<{
     studentID: string,
     courseID: string,
-    status: number
   }>
 }
 
-export const approveStudents = async (payload: ApproveStudentsRequest): Promise<ApproveStudentsResponse> => {
+interface AssignStudentsResponse {
+  status: string,
+  message: any,
+}
+
+export const assignStudents = async (payload: AssignStudentsRequest): Promise<AssignStudentsResponse> => {
   return await request.post('/course/assign/student', payload);
 }
 
@@ -211,11 +224,27 @@ export const getAllLecturers = async (): Promise<GetAllLecturersResponse> => {
 
 // ===========STUDENTS=========
 
-interface getAllStudentsResponse {
+interface GetAllStudentsResponse {
   status: string,
   students: Student[],
 }
 
-export const getAllStudents = async (): Promise<getAllStudentsResponse> => {
+export const getAllStudents = async (): Promise<GetAllStudentsResponse> => {
   return await request.get('/student');
+}
+
+interface ApproveStudentsRequest {
+  body: Array<{
+    studentID: string,
+    courseID: string,
+  }>
+}
+
+interface ApproveStudentsResponse {
+  status: string,
+  message: any,
+}
+
+export const approveStudents = async (payload: ApproveStudentsRequest): Promise<ApproveStudentsResponse> => {
+  return await request.put('/student/approve', payload);
 }

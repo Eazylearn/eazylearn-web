@@ -109,8 +109,7 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
     const _getCourses = async () => {
       setLoading(true);
       const res = await getAllCourses(query, page - 1);
-      if (res.status === "Ok") {
-        console.log(res.courses);
+      if (res.status === "OK") {
         setCourseList(res.courses);
         setMaxPage(res.maxPage);
       }

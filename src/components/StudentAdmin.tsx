@@ -74,7 +74,6 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
       setLoading(true);
 
       const res = await getAllStudents();
-      console.log('res', res);
       if (res.status === "OK") {
         setStudentList(res.students);
         setShownList(res.students);

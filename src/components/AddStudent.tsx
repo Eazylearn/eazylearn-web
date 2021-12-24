@@ -1,6 +1,10 @@
-import { InputAdornment, makeStyles, TextField, Typography, Button, Modal, Backdrop, Slide } from '@material-ui/core';
+import { InputAdornment, makeStyles, TextField, Typography, Button, Modal, Backdrop, Slide, CircularProgress } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
-import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler } from 'react';
+import React, { ChangeEvent, ChangeEventHandler, useEffect, useState } from 'react';
+import { CheckStudent } from '../screens/course-config/StudentList';
+import { assignStudents, getAllStudents } from '../utils/api';
+import { CourseStudent } from '../utils/types';
+import StudentItem from './list-item/student';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -64,21 +68,86 @@ const useStyles = makeStyles(theme => ({
 interface AddStudentProps {
   open: boolean,
   handleClose: () => void,
-  // id course sth sth TODO
+  exclude: string[],
+  courseID: string,
+  reload: () => void,
 }
 
 const AddStudent: React.FC<AddStudentProps> = ({
   open,
-  handleClose
+  handleClose,
+  exclude = [],
+  courseID,
+  reload,
 }) => {
   const styles = useStyles();
 
-  const handleSearch: ChangeEventHandler = (event: ChangeEvent) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [studentList, setStudentList] = useState<CourseStudent[]>([]);
+  const [shownList, setShownList] = useState<CheckStudent[]>([]);
+  const [searchTimeout, setSearchTimeout] = useState<number>(0);
+  const [seed, setSeed] = useState<number>(0);
 
+  const forceUpdate = () => setSeed(Math.random());
+
+  useEffect(() => {
+    const _getStudents = async () => {
+      setLoading(true);
+
+      const res = await getAllStudents();
+      if (res.status === "OK") {
+        setStudentList(res.students
+          .filter(s => exclude.indexOf(s.student_id) === -1)
+          .map(s => ({ ...s, status: 0 }))
+        );
+        setShownList(res.students
+          .filter(s => exclude.indexOf(s.student_id) === -1)
+          .map(s => ({ ...s, checked: false, status: 0 }))
+        );
+      }
+      else {
+        // alert error message
+      }
+
+      setLoading(false);
+    }
+
+    _getStudents();
+  }, [exclude])
+
+	const searchHandler = (text: string) => (student: CourseStudent): boolean => {
+		return student.student_name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
+	}
+
+  const handleSearch: ChangeEventHandler = (event: ChangeEvent) => {
+		const searchText = (event.target as HTMLInputElement).value;
+    if (searchTimeout)
+      clearTimeout(searchTimeout);
+    setSearchTimeout(window.setTimeout(() => {
+      setShownList(studentList
+        .filter(searchHandler(searchText))
+        .map(s => ({ ...s, checked: false }))
+      );
+    }, 500));
   }
 
-  const handleAdd: MouseEventHandler = () => {
+  const handleAdd = async () => {
+    const payload = shownList.filter(s => s.checked).map(s => ({
+      studentID: s.student_id,
+      courseID,
+    }))
+    const res = await assignStudents({ body: payload });
+    if (res.status === "OK") {
+      reload();
+      handleClose();
+    }
+  }
 
+  const handleCheckStudent = (id: string): ChangeEventHandler => (event: ChangeEvent): void => {
+    const pos = shownList.findIndex(s => s.student_id === id);
+    // takes the 2nd click to check, fix TODO
+    shownList[pos].checked = (event.target as HTMLInputElement).checked;
+    forceUpdate();
   }
 
   return (
@@ -91,7 +160,6 @@ const AddStudent: React.FC<AddStudentProps> = ({
         direction="up"
         in={open}
       >
-
         <section className={styles.container}>
           <Typography className={styles.header} variant="h4" color="initial">
             Add students manually from database
@@ -128,7 +196,21 @@ const AddStudent: React.FC<AddStudentProps> = ({
             </div>
           </div>
           <div className={styles.listContainer}>
-
+            {
+              loading 
+              ? (<CircularProgress color="secondary" />)
+              : shownList
+                .map((student, ind: number) => (
+                <StudentItem
+                  key={ind}
+                  name={student.student_name}
+                  id={student.student_id}
+                  checked={student.checked}
+                  onChange={handleCheckStudent(student.student_id)}
+                  showOptions={false}
+                />
+              ))
+            }
           </div>
         </section>
       </Slide>

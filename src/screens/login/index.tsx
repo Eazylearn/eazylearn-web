@@ -129,7 +129,6 @@ const Login: React.FC<LoginProps> = ({
     }
 
     const res = await login(payload);
-    console.log(res);
     if (res.status === "OK") {
       window.localStorage.setItem("access_token", res.token);
       saveAuth(res.token);
