@@ -109,13 +109,24 @@ const request = {
 
 // ========AUTH=========
 
-export interface loginPayload {
+export interface LoginPayload {
   username: string,
   password: string
 }
 
-export const login = async (payload: loginPayload) => {
+export const login = async (payload: LoginPayload) => {
   return await request.post('/account/login', payload);
+}
+
+interface GetAccountInfoResponse {
+  status: string,
+  user: {
+
+  }
+}
+
+export const getAccountInfo = async (username: string): Promise<GetAccountInfoResponse> => {
+  return await request.get('/account', { username })
 }
 
 // ========COURSE==========

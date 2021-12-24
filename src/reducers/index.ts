@@ -4,7 +4,7 @@ import { connectRouter } from 'connected-react-router';
 
 export type Action <D> = {
   type: string,
-  data?: Partial<D>
+  data: D,
 }
 
 export interface RootStateProps {
