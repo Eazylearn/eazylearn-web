@@ -8,12 +8,11 @@ import {
   makeStyles
 } from "@material-ui/core";
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import React, { ChangeEvent, useState } from "react";
-
-interface Props {
-  currentTab: "course" | "lecturer" | "student";
-  onChangeTab: any;
-}
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { RootStateProps } from "../reducers";
+import { AuthProps } from "../reducers/auth";
+import history from "../utils/history";
 
 const useStyles = makeStyles(theme => ({
   appbar: {
@@ -36,16 +35,38 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     borderRadius: "50px 0 0 50px",
     alignSelf: "stretch",
+    fontWeight: "bold"
   },
 }));
 
-const HeaderAdmin = function (props: Props) {
+interface ConnectedHeaderAdminProps {
+  currentTab: "course" | "lecturer" | "student";
+  onChangeTab: any;
+}
+
+interface HeaderAdminStateProps {
+  auth: AuthProps,
+}
+
+interface HeaderAdminDispatchProps {
+
+}
+
+interface HeaderAdminProps extends ConnectedHeaderAdminProps, HeaderAdminDispatchProps, HeaderAdminStateProps {}
+
+const HeaderAdmin: React.FC<HeaderAdminProps> = function ({
+  onChangeTab,
+  currentTab,
+  auth,
+}) {
   const classes = useStyles();
   const [tabValue, setTabValue] = useState(0);
 
+  useEffect(() => console.log(auth), [auth]);
+
   const changeTab = function (e: ChangeEvent<{}>, val: any) {
     setTabValue(val);
-    props.onChangeTab(val);
+    onChangeTab(val);
   };
 
   return (
@@ -65,21 +86,37 @@ const HeaderAdmin = function (props: Props) {
           <Tab label="Lecturer" id="tab-lecturer" />
           <Tab label="Student" id="tab-student" />
         </Tabs>
-        <Button
-          className={classes.profileButton}
-          variant="contained"
-          color="primary"
-          startIcon={<ArrowDropDownIcon style={{ fontSize: 33 }} />}
-        >
-          Admin name
-        </Button>
+        {
+          auth.token !== "" ? (
+            <Button
+              className={classes.profileButton}
+              variant="contained"
+              color="secondary"
+              startIcon={<ArrowDropDownIcon style={{ fontSize: 33 }} />}
+            >
+              { auth.username }
+            </Button>
+          ) : (
+            <Button
+              className={classes.profileButton}
+              variant="contained"
+              color="secondary"
+              startIcon={<ArrowDropDownIcon style={{ fontSize: 33 }} />}
+              onClick={() => history.push('/login')}
+            >
+              Login
+            </Button>
+          )
+        }
       </Toolbar>
     </AppBar>
   );
 };
 
-HeaderAdmin.defaultProps = {
-  current_tab: "course",
-};
+const ConnectedHeaderAdmin: React.FC<ConnectedHeaderAdminProps> = connect((state: RootStateProps) => ({ auth: state.auth }), {})(HeaderAdmin);
 
-export default HeaderAdmin;
+// HeaderAdmin.defaultProps = {
+//   current_tab: "course",
+// };
+
+export default ConnectedHeaderAdmin;

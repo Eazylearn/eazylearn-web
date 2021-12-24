@@ -2,10 +2,12 @@ import { Action } from ".";
 
 const defaultAuth = {
   token: "",
+  username: "",
 }
 
 export interface AuthProps {
   token: string,
+  username: string,
 }
 
 export const AUTH_ACTION_TYPES = {
@@ -15,27 +17,30 @@ export const AUTH_ACTION_TYPES = {
 
 export interface AuthActiondData {
   token: string,
+  username: string,
 }
 
-export const saveAuth = (token: string) => ({
+export const saveAuth = (token: string, username: string) => ({
   type: AUTH_ACTION_TYPES.save,
   data: {
     token,
+    username,
   },
 });
 
 export const clearAuth = () => ({
   type: AUTH_ACTION_TYPES.clear,
+  data: {},
 })
 
 const authReducer = (auth = defaultAuth, action: Action<AuthActiondData>) => {
+  console.log(action.type, action.data);
+
   switch (action.type) {
     case AUTH_ACTION_TYPES.save: {
-      const token = action.data?.token;
-      if (token === undefined) {
-        return defaultAuth;
-      }
+      const { token, username } = action.data;
       auth.token = token;
+      auth.username = username;
       return auth;
     }
     case AUTH_ACTION_TYPES.clear: {

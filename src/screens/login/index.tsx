@@ -19,7 +19,7 @@ import {
   Link,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
-import { loginPayload, login } from '../../utils/api';
+import { LoginPayload, login } from '../../utils/api';
 import { connect } from 'react-redux';
 import { AuthProps, saveAuth } from '../../reducers/auth';
 import { RootStateProps } from '../../reducers';
@@ -123,7 +123,7 @@ const Login: React.FC<LoginProps> = ({
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e: FormEvent) => {
     e.preventDefault();
-    const payload: loginPayload = {
+    const payload: LoginPayload = {
       username,
       password,
     }
@@ -131,7 +131,7 @@ const Login: React.FC<LoginProps> = ({
     const res = await login(payload);
     if (res.status === "OK") {
       window.localStorage.setItem("access_token", res.token);
-      saveAuth(res.token);
+      saveAuth(res.token, username);
       history.push("/");
     }
   }
@@ -140,7 +140,7 @@ const Login: React.FC<LoginProps> = ({
     if (auth.token !== "") {
       history.push("/");
     }
-  }, [auth.token]);
+  }, [auth]);
 
   return (
     <div className={styles.loginContainer}>
@@ -169,6 +169,7 @@ const Login: React.FC<LoginProps> = ({
                 value={username}
                 placeholder="Input your username here"
                 onChange={(e: ChangeEvent) => handleChangeUsername(e)}
+                formControlStyle={{ width: "80%" }}
               />
               <Input
                 title="Password"
@@ -177,6 +178,7 @@ const Login: React.FC<LoginProps> = ({
                 value={password}
                 placeholder="Input your password here"
                 onChange={(e: ChangeEvent) => handleChangePassword(e)}
+                formControlStyle={{ width: "80%" }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
