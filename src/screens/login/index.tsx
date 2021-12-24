@@ -6,22 +6,25 @@ React,
   FormEvent,
   FormEventHandler,
   MouseEventHandler,
+  useEffect,
   useState
 }
 from 'react';
 import {
   makeStyles,
-  TextField,
   Typography,
-  FormControl,
   InputAdornment,
   IconButton,
-  OutlinedInputProps,
   Button,
   Link,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { loginPayload, login } from '../../utils/api';
+import { connect } from 'react-redux';
+import { AuthProps, saveAuth } from '../../reducers/auth';
+import { RootStateProps } from '../../reducers';
+import history from '../../utils/history';
+import Input from '../../components/Input';
 
 const useStyles = makeStyles(theme => ({
   loginContainer: {
@@ -81,11 +84,23 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface LoginProps {
+interface ConnectedLoginProps {
 
 }
+interface LoginProps extends LoginStateProps, LoginDispatchProps, ConnectedLoginProps {};
 
-const Login: React.FC<LoginProps> = () => {
+interface LoginStateProps {
+  auth: AuthProps,
+}
+
+interface LoginDispatchProps {
+  saveAuth: typeof saveAuth,
+}
+
+const Login: React.FC<LoginProps> = ({
+  auth,
+  saveAuth,
+}) => {
   const styles = useStyles();
 
   const [username, setUsername] = useState("");
@@ -114,8 +129,18 @@ const Login: React.FC<LoginProps> = () => {
     }
 
     const res = await login(payload);
-    console.log(res); //or do sth later
+    if (res.status === "OK") {
+      window.localStorage.setItem("access_token", res.token);
+      saveAuth(res.token);
+      history.push("/");
+    }
   }
+
+  useEffect(() => {
+    if (auth.token !== "") {
+      history.push("/");
+    }
+  }, [auth.token]);
 
   return (
     <div className={styles.loginContainer}>
@@ -126,13 +151,17 @@ const Login: React.FC<LoginProps> = () => {
             MADE EASY
           </Typography>
           <span>
-            <Typography style={{ fontWeight: "bold" }} variant="h2" component="span" color="primary">WITH</Typography>
-            <Typography style={{ marginLeft: 10, fontWeight: "bold" }} variant="h2" component="span" color="secondary">EAZYLEARN</Typography>
+            <Typography variant="h2" component="span" color="primary">
+              WITH
+            </Typography>
+            <Typography style={{ marginLeft: 10, fontWeight: "bold" }} variant="h2" component="span" color="secondary">
+              EAZYLEARN
+            </Typography>
           </span>
         </section>
         <section className={styles.formContainer}>
           <form className={styles.form} onSubmit={handleSubmit}>
-            <Typography style={{ fontWeight: "bold" }} variant="h4" color="secondary">LOGIN</Typography>
+            <Typography variant="h4" color="secondary">LOGIN</Typography>
             <div className={styles.formContent}>
               <Input
                 title="Username"
@@ -182,54 +211,6 @@ const Login: React.FC<LoginProps> = () => {
   )
 }
 
-const useInputStyles = makeStyles(theme => ({
-  formControl: {
-    width: "80%",
-    "& fieldset": {
-      borderRadius: 20,
-    },
-    "& *": {
-      fontWeight: "bold",
-    }
-  }
-}))
+const ConnectedLogin: React.FC<ConnectedLoginProps> = connect((state: RootStateProps) => ({ auth: state.auth }), { saveAuth })(Login);
 
-interface InputProps {
-  title: string,
-  id: string,
-  value: string,
-  placeholder: string,
-  onChange: ChangeEventHandler,
-  type?: string,
-  InputProps?: OutlinedInputProps,
-}
-
-const Input: React.FC<InputProps> = ({
-  title,
-  id,
-  value,
-  placeholder,
-  onChange,
-  type = "text",
-  InputProps,
-}) => {
-  const styles = useInputStyles();
-
-  return (
-    <FormControl className={styles.formControl}>
-      <TextField
-        id={id}
-        label={title}
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-        type={type}
-        variant="outlined"
-        color="secondary"
-        InputProps={InputProps}
-      />
-    </FormControl>
-  )
-}
-
-export default Login
+export default ConnectedLogin;

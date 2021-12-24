@@ -5,9 +5,9 @@ import {
   Tabs,
   Tab,
   Button,
+  makeStyles
 } from "@material-ui/core";
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import { makeStyles } from "@material-ui/styles";
 import React, { ChangeEvent, useState } from "react";
 
 interface Props {
@@ -15,7 +15,10 @@ interface Props {
   onChangeTab: any;
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
+  appbar: {
+    background: theme.palette.background.paper,
+  },
   toolbar: {
     display: "flex",
     justifyContent: "space-between",
@@ -34,7 +37,7 @@ const useStyles = makeStyles({
     borderRadius: "50px 0 0 50px",
     alignSelf: "stretch",
   },
-});
+}));
 
 const HeaderAdmin = function (props: Props) {
   const classes = useStyles();
@@ -46,7 +49,7 @@ const HeaderAdmin = function (props: Props) {
   };
 
   return (
-    <AppBar>
+    <AppBar className={classes.appbar}>
       <Toolbar className={classes.toolbar}>
         <Typography className={classes.title} variant="h1">
           EAZYLEARN

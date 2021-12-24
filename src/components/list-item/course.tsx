@@ -1,14 +1,6 @@
-import { makeStyles } from '@material-ui/styles';
-import React from 'react';
+import { makeStyles } from '@material-ui/core';
+import React, { MouseEventHandler } from 'react';
 import Typography from '@material-ui/core/Typography'
-
-
-
-interface CourseItemProps {
-  name: string,
-  lecturers: Array<string>,
-  numStudents: number,
-}
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -16,6 +8,13 @@ const useStyles = makeStyles(theme => ({
     padding: 36,
     boxShadow: "0px 6px 4px rgba(49, 133, 252, 0.24)",
     borderRadius: 15,
+    boxSizing: "border-box",
+    border: "2px solid",
+    borderColor: "transparent",
+    transition: "border-color .2s ease-in-out",
+    "&:hover": {
+      borderColor: theme.palette.secondary.main,
+    }
   },
   content: {
     display: "flex",
@@ -33,26 +32,43 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+interface CourseItemProps {
+  id: string,
+  name: string,
+  lecturers: Array<string>,
+  numStudents: number,
+  numPending: number,
+  onClick: MouseEventHandler,
+}
+
 const CourseItem: React.FC<CourseItemProps> = ({
+  id,
   name,
   lecturers,
   numStudents,
+  numPending,
+  onClick
 }) => {
   const styles = useStyles();
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onClick={onClick}>
       <div className={styles.content}>
         <Typography style={{ fontWeight: "bold" }} variant="h4" color="initial">
-          {name}
+          {id} - {name}
         </Typography>
         <div className={styles.divider} />
-        <Typography style={{ fontWeight: "bold" }} variant="body1" color="initial">
+        <Typography variant="body1" color="initial">
           {`Lecturers: ${lecturers.length === 0 ? "none" : lecturers.join(", ")}`}
         </Typography>
-        <Typography style={{ fontWeight: "bold" }} variant="body1" color="initial">
-          Number of students: {numStudents}
-        </Typography>
+        <div style={{ width: "100%", display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+          <Typography variant="body1" color="initial">
+            Number of students: {numStudents}
+          </Typography>
+          <Typography style={{ fontWeight: "bold" }} variant="body1" color={numPending > 0 ? "error" : "secondary"}>
+            Wait for approval: {numPending}
+          </Typography>
+        </div>
       </div>
     </div>
   )
