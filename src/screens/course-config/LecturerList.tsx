@@ -62,7 +62,7 @@ const LecturerList: React.FC<LecturerListProps> = ({
             className={styles.addButton}
             color="secondary"
             variant="contained"
-            onClick={() => setOpenManualAdd(true)}
+            // onClick={() => setOpenManualAdd(true)} TODO
           >
             <Add />
           </Button>
