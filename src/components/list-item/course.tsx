@@ -65,7 +65,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
           <Typography variant="body1" color="initial">
             Number of students: {numStudents}
           </Typography>
-          <Typography style={{ fontWeight: "bold" }} variant="body1" color="secondary">
+          <Typography style={{ fontWeight: "bold" }} variant="body1" color={numPending > 0 ? "error" : "secondary"}>
             Wait for approval: {numPending}
           </Typography>
         </div>

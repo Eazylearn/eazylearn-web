@@ -8,6 +8,7 @@ import history from '../../utils/history';
 import StudentList from './StudentList';
 import LecturerList from './LecturerList';
 import SettingsPanel from './SettingsPannel';
+import CourseInfo from './CourseInfo';
 
 interface CourseConfigProps {
 
@@ -68,11 +69,11 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 15,
     fontWeight: "bold",
   },
-  studentList: {
+  mainPanel: {
     gridColumn: 1,
     gridRow: 2,
   },
-  lecturerList: {
+  sidePanel: {
     gridColumn: "2 / span 2",
     gridRow: 2,
   }
@@ -87,27 +88,31 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
   const [edit, setEdit] = useState<boolean>(false);
   const [courseName, setCourseName] = useState<string>(course?.course_name || "");
   const [courseID, setCourseID] = useState<string>(course?.course_id || "");
+  const [courseYear, setCourseYear] = useState<string>(course?.academic_year || "");
+  const [courseSem, setCourseSem] = useState<number>(course?.semester || 0);
   const [saving, setSaving] = useState<boolean>(false);
 
-  useEffect(() => {
-    const _getCourse = async (id: string) => {
-      try {
-        const res = await getCourse(id);
-        if (res.status === "OK") {
-          setCourse(res.course);
-          setCourseName(res.course.course_name);
-          setCourseID(res.course.course_id);
-        }
-        else {
-          history.push("/");
-        }
+  const _getCourse = async (id: string) => {
+    try {
+      const res = await getCourse(id);
+      if (res.status === "OK") {
+        setCourse(res.course);
+        setCourseName(res.course.course_name);
+        setCourseID(res.course.course_id);
+        setCourseYear(res.course.academic_year);
+        setCourseSem(res.course.semester);
       }
-      catch (err) {
-        console.error(err);
+      else {
         history.push("/");
       }
     }
+    catch (err) {
+      console.error(err);
+      history.push("/");
+    }
+  }
 
+  useEffect(() => {
     if (id) {
       if (id !== "new")
         _getCourse(id);
@@ -115,8 +120,8 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
         setCourse({
           course_id: "",
           course_name: "",
-          academic_year: "2020", // TODO
-          semester: 1, // TODO
+          academic_year: "",
+          semester: 0,
           students: [],
           lecturers: [],
         })
@@ -139,14 +144,12 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
     const payload = {
       id: courseID,
       name: courseName,
-      academicYear: course?.academic_year || "",
-      semester: course?.semester || 1,
     }
 
     setSaving(true);
     const res = id === "new" ? 
       await createCourse(payload) :
-      await updateCourse(course?.course_id, payload);
+      await updateCourse(id, payload);
     setSaving(false);
     setEdit(false);
 
@@ -159,6 +162,10 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
     setCourseName(course?.course_name || "");
     setCourseID(course?.course_id || "");
     setEdit(false);
+  }
+
+  const handleReload = () => {
+    _getCourse(id);
   }
 
   if (course === null)
@@ -234,11 +241,22 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
           <Settings />
         </IconButton>
       </div>
-      <div className={styles.studentList}>
-        <StudentList studentList={course.students} courseID={course.course_id} />
+      <div className={styles.mainPanel}>
+        <StudentList
+          studentList={course.students}
+          courseID={course.course_id}
+          reload={handleReload}
+        />
       </div>
-      <div className={styles.lecturerList}>
+      <div className={styles.sidePanel}>
         <LecturerList lecturerList={course.lecturers} />
+        <CourseInfo
+          id={id}
+          academicYear={courseYear}
+          semester={courseSem}
+          setYear={setCourseYear}
+          setSem={setCourseSem}
+        />
       </div>
     </div>
   )

@@ -4,6 +4,7 @@ import { CourseStudent } from '../../utils/types';
 import { KeyboardArrowDown, Search } from '@material-ui/icons';
 import StudentItem from '../../components/list-item/student';
 import AddStudent from '../../components/AddStudent';
+import { approveStudents } from '../../utils/api';
 
 const useStudentListStyle = makeStyles(theme => ({
 	container: {
@@ -63,6 +64,7 @@ const useStudentListStyle = makeStyles(theme => ({
 		display: "inline-flex",
 		justifyContent: "space-between",
 		alignItems: "center",
+		margin: "10px 0px",
 	},
 	checkBoxContainer: {
 		paddingLeft: 6,
@@ -82,11 +84,13 @@ interface CheckStudent extends CourseStudent {
 }
 
 interface StudentListProps {
+	reload: () => void,
 	studentList: Array<CourseStudent>,
 	courseID: string
 }
 
 const StudentList: React.FC<StudentListProps> = ({
+	reload,
 	studentList,
 	courseID,
 }) => {
@@ -141,13 +145,13 @@ const StudentList: React.FC<StudentListProps> = ({
 		console.log(payload);
 
 		// do sth after that
-		// const res = await approveStudents(payload);
-		// if (res.status === "OK") {
-		// 	// success
-		// }
-		// else {
-		// 	// failed
-		// }
+		const res = await approveStudents({ body: payload });
+		if (res.status === "OK") {
+			reload()
+		}
+		else {
+			// failed
+		}
 
 		return;
 	}
@@ -159,11 +163,11 @@ const StudentList: React.FC<StudentListProps> = ({
 		setSearchTimeout(window.setTimeout(() => {
 			const newList = studentList.filter(searchHandler(searchText));
 			setPendingStudents(newList
-				.filter(s => s.status === "pending")
+				.filter(s => s.status === 0)
 				.map(s => ({ ...s, checked: false }))
 			);
 			setApprovedStudents(newList
-				.filter(s => s.status !== "pending")
+				.filter(s => s.status === 1)
 				.map(s => ({ ...s, checked: false }))
 			);
 		}, 500));
@@ -172,11 +176,11 @@ const StudentList: React.FC<StudentListProps> = ({
 	useEffect(() => {
 		console.log(studentList);
 		setPendingStudents(studentList
-			.filter(s => s.status === "pending")
+			.filter(s => s.status === 0)
 			.map(s => ({ ...s, checked: false }))
 		);
 		setApprovedStudents(studentList
-			.filter(s => s.status !== "pending")
+			.filter(s => s.status === 1)
 			.map(s => ({ ...s, checked: false }))
 		);
 	}, [studentList]);
@@ -244,7 +248,8 @@ const StudentList: React.FC<StudentListProps> = ({
 							</Collapse>
 						</div>
 					</ClickAwayListener>
-				</div><div className={styles.listContainer}>
+				</div>
+				<div className={styles.listContainer}>
 					<Typography style={{ fontWeight: "bold" }} variant="h6" color="initial">
 						Pending requests
 					</Typography>

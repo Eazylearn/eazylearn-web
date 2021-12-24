@@ -191,8 +191,8 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
                 id={course.course_id}
                 name={course.course_name}
                 lecturers={course.lecturers.map(l => l.lecturer_name) || []}
-                numStudents={course.students.filter(s => s.status !== "pending").length}
-                numPending={course.students.filter(s => s.status === "pending").length}
+                numStudents={course.students.filter(s => s.status === 1).length}
+                numPending={course.students.filter(s => s.status === 0).length}
                 onClick={() => history.push(`/course/${course.course_id}`)}
               />
             ))

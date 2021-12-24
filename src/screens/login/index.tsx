@@ -12,12 +12,9 @@ React,
 from 'react';
 import {
   makeStyles,
-  TextField,
   Typography,
-  FormControl,
   InputAdornment,
   IconButton,
-  OutlinedInputProps,
   Button,
   Link,
 } from '@material-ui/core';
@@ -27,6 +24,7 @@ import { connect } from 'react-redux';
 import { AuthProps, saveAuth } from '../../reducers/auth';
 import { RootStateProps } from '../../reducers';
 import history from '../../utils/history';
+import Input from '../../components/Input';
 
 const useStyles = makeStyles(theme => ({
   loginContainer: {
@@ -215,52 +213,5 @@ const Login: React.FC<LoginProps> = ({
 }
 
 const ConnectedLogin: React.FC<ConnectedLoginProps> = connect((state: RootStateProps) => ({ auth: state.auth }), { saveAuth })(Login);
-
-const useInputStyles = makeStyles(theme => ({
-  formControl: {
-    width: "80%",
-    "& fieldset": {
-      borderRadius: 20,
-    },
-  }
-}))
-
-interface InputProps {
-  title: string,
-  id: string,
-  value: string,
-  placeholder: string,
-  onChange: ChangeEventHandler,
-  type?: string,
-  InputProps?: OutlinedInputProps,
-}
-
-const Input: React.FC<InputProps> = ({
-  title,
-  id,
-  value,
-  placeholder,
-  onChange,
-  type = "text",
-  InputProps,
-}) => {
-  const styles = useInputStyles();
-
-  return (
-    <FormControl className={styles.formControl}>
-      <TextField
-        id={id}
-        label={title}
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-        type={type}
-        variant="outlined"
-        color="secondary"
-        InputProps={InputProps}
-      />
-    </FormControl>
-  )
-}
 
 export default ConnectedLogin;

@@ -106,6 +106,8 @@ const request = {
  * export const getSth = async () => return await request.get("/sth");
  */
 
+// ========AUTH=========
+
 export interface loginPayload {
   username: string,
   password: string
@@ -115,13 +117,16 @@ export const login = async (payload: loginPayload) => {
   return await request.post('/account/login', payload);
 }
 
+// ========COURSE==========
+
 export interface getCourseResponse {
   status: string,
   course: Course,
 }
 
 export const getCourse = async (id: string): Promise<getCourseResponse> => {
-  return await request.get('/course', { id });
+  const res = await request.get('/course', { id });
+  return res;
 };
 
 interface getAllCoursesResponse {
@@ -130,87 +135,10 @@ interface getAllCoursesResponse {
   maxPage: number
 }
 
-/**
- * 
- * @param query query string
- * @param page current page number
- * @returns 
- */
-
 export const getAllCourses = async (query: string = "", page: number = 0): Promise<getAllCoursesResponse> => {
   return await request.get('/course/search', { query, page });
 }
 
-interface GetAllLecturersResponse {
-  status: string,
-  lecturers: Lecturer[],
-}
-
-export const getAllLecturers = async (): Promise<GetAllLecturersResponse> => {
-  return await request.get('/lecturer');
-
-  // const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-  // await wait(1000);
-  // return {
-  //   status: "OK",
-  //   lecturers: [
-  //     {
-  //       lecturer_id: "1",
-  //       account_id: "1",
-  //       lecturer_name: "Fujiwara Chika",
-  //     },
-  //     {
-  //       lecturer_id: "1",
-  //       account_id: "1",
-  //       lecturer_name: "Hanekawa Tsubasa",
-  //     },
-  //     {
-  //       lecturer_id: "1",
-  //       account_id: "1",
-  //       lecturer_name: "Sakurajima Mai",
-  //     }
-  //   ]
-  // }
-}
-
-interface getAllStudentsResponse {
-  status: string,
-  students: Student[],
-}
-
-export const getAllStudents = async (): Promise<getAllStudentsResponse> => {
-  return await request.get('/student');
-  // const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-  // await wait(1000);
-  // return {
-  //   status: "OK",
-  //   student: [
-  //     {
-  //       student_id: "1",
-  //       account_id: "1",
-  //       class_id: "19CTT2",
-  //       student_name: "Dảk",
-  //       status: "approved",
-  //     },
-  //     {
-  //       student_id: "2",
-  //       account_id: "2",
-  //       class_id: "19CTT2",
-  //       student_name: "Bủh",
-  //       status: "approved",
-  //     },
-  //     {
-  //       student_id: "3",
-  //       account_id: "3",
-  //       class_id: "19CTT2",
-  //       student_name: "Lmao",
-  //       status: "approved",
-  //     }
-  //   ]
-  // }
-}
 interface DeleteCourseResponse {
   status: string,
   message: string,
@@ -221,10 +149,10 @@ export const deleteCourse = async (id: string): Promise<DeleteCourseResponse> =>
 }
 
 interface UpdateCourseRequest {
-  id: string,
-  name: string,
-  academicYear: string,
-  semester: number,
+  id?: string,
+  name?: string,
+  academicYear?: string,
+  semester?: number,
 }
 
 interface UpdateCourseResponse {
@@ -232,7 +160,7 @@ interface UpdateCourseResponse {
   message: any,
 }
 
-export const updateCourse = async (id: string = "", payload: UpdateCourseRequest): Promise<UpdateCourseResponse> => {
+export const updateCourse = async (id: string, payload: UpdateCourseRequest): Promise<UpdateCourseResponse> => {
   return await request.put(`/course?id=${id}`, payload);
 }
 
@@ -248,4 +176,46 @@ export const createCourse = async (payload: CreateCourseRequest): Promise<Create
   res.message.lecturers = [];
   res.message.students = [];
   return (res as CreateCourseResponse);
+}
+
+interface ApproveStudentsRequest {
+  body: Array<{
+    studentID: string,
+    courseID: string,
+  }>
+}
+
+interface ApproveStudentsResponse {
+  status: string,
+  message: Array<{
+    studentID: string,
+    courseID: string,
+    status: number
+  }>
+}
+
+export const approveStudents = async (payload: ApproveStudentsRequest): Promise<ApproveStudentsResponse> => {
+  return await request.post('/course/assign/student', payload);
+}
+
+// ========LECTURERS=========
+
+interface GetAllLecturersResponse {
+  status: string,
+  lecturers: Lecturer[],
+}
+
+export const getAllLecturers = async (): Promise<GetAllLecturersResponse> => {
+  return await request.get('/lecturer');
+}
+
+// ===========STUDENTS=========
+
+interface getAllStudentsResponse {
+  status: string,
+  students: Student[],
+}
+
+export const getAllStudents = async (): Promise<getAllStudentsResponse> => {
+  return await request.get('/student');
 }

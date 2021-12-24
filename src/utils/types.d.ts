@@ -15,7 +15,7 @@ export interface Student {
 }
 
 export interface CourseStudent extends Student {
-  status: "approved" | "pending",
+  status: number,
 }
 
 export interface Lecturer {

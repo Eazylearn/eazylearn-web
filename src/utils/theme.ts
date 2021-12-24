@@ -18,6 +18,10 @@ const theme = createTheme({
       dark: blueDark,
       contrastText: white,
     },
+    warning: {
+      main: yellow,
+      contrastText: black,
+    },
     background: {
       default: white,
       paper: white,

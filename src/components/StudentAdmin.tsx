@@ -132,7 +132,6 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
                 key={ind}
                 name={student.student_name}
                 id={student.student_id}
-                status=""
                 checked={false}
                 onChange={handleCheckStudent(student.student_id)}
               />

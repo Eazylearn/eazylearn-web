@@ -1,5 +1,6 @@
 import { Backdrop, Button, CircularProgress, ClickAwayListener, makeStyles, Modal, Slide, Typography } from '@material-ui/core';
 import React, { MouseEventHandler, useState } from 'react';
+import { deleteCourse } from '../../utils/api';
 import history from '../../utils/history';
 
 const useSettingsPanelStyles = makeStyles(theme => ({
@@ -156,13 +157,13 @@ const DeletePanel: React.FC<DeletePanelProps> = ({
 
   const handleDeleteCourse = async () => {
     setLoading(true);
-    // TODO
-    // await deleteCourse(id);
-    const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-    await wait(1000);
-
+    const res = await deleteCourse(id);
     setLoading(false);
-    history.push('/');
+
+    if (res.status === "OK") {
+      history.push('/');
+    }
+
     return;
   }
 

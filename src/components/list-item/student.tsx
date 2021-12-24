@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 interface StudentItemProps {
   name: string,
   id?: string,
-  status: "approved" | "pending" | "",
+  status?: number,
   checked: boolean,
   onChange: ChangeEventHandler,
   options?: ReactNode,
@@ -54,7 +54,7 @@ interface StudentItemProps {
 const StudentItem: React.FC<StudentItemProps> = ({
   name,
   id = "",
-  status,
+  status = -1,
   checked,
   onChange,
   options = <></>,
@@ -79,9 +79,9 @@ const StudentItem: React.FC<StudentItemProps> = ({
           {name}
         </Typography>
         {
-          status.length > 0 ? (
-            <Typography style={{ color: status === "pending" ? "#F7CB15" : "#00E3AA" }} variant="body1">
-              {status === "pending" ? "Pending" : "Approved"}
+          status >= 0 ? (
+            <Typography style={{ color: status === 0 ? "#F7CB15" : "#00E3AA" }} variant="body1">
+              {status === 0 ? "Pending" : "Approved"}
             </Typography>
           ) : (
             <Typography style={{ color: "#3A3A3A" }} variant="body1">
