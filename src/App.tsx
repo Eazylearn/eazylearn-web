@@ -8,13 +8,15 @@ import './App.css';
 import store from './store';
 import theme from './utils/theme';
 import history from './utils/history';
+import { saveAuth } from './reducers/auth';
+import { getAccountInfo } from './utils/api';
 // Import views
 import HomeScreen from './screens/HomeScreen';
 import Login from './screens/login';
 import ForgotPassword from './screens/forgot-password';
 import CourseConfig from './screens/course-config';
-import { saveAuth } from './reducers/auth';
-import { getAccountInfo } from './utils/api';
+import Test from './screens/test';
+import AlertContainer from './components/alert';
 
 function App() {
 
@@ -49,10 +51,12 @@ function App() {
             <Route path="/login" component={Login} />
             <Route path="/forgot-password" component={ForgotPassword} />
             <Route path="/course/:id" component={CourseConfig} />
+            <Route path="/test" component={Test} />
             <Route path="*">
               <Redirect to="/"/>
             </Route>
           </Switch>
+          <AlertContainer />
         </ConnectedRouter>
       </ThemeProvider>
     </Provider>

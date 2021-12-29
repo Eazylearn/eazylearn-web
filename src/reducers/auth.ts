@@ -34,8 +34,6 @@ export const clearAuth = () => ({
 })
 
 const authReducer = (auth = defaultAuth, action: Action<AuthActiondData>) => {
-  console.log(action.type, action.data);
-
   switch (action.type) {
     case AUTH_ACTION_TYPES.save: {
       const { token, username } = action.data;

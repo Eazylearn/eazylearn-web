@@ -1,0 +1,1 @@
+export const alertDuration = 3000 // by ms

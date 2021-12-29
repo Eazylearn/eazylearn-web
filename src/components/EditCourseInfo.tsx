@@ -2,6 +2,8 @@ import { makeStyles, Typography, Button, Modal, Backdrop, Slide, Select, MenuIte
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { updateCourse } from '../utils/api';
 import Input from './Input';
+import { addAlert } from '../reducers/alert';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -49,7 +51,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-interface EditCourseInfoProps {
+interface ConnectedEditCourseInfoProps {
   open: boolean,
   id: string,
   handleClose: () => void,
@@ -59,6 +61,16 @@ interface EditCourseInfoProps {
   setSem: (value: number) => void,
 }
 
+interface EditCourseInfoStateProps {
+
+}
+
+interface EditCourseInfoDispatchProps {
+  addAlert: (type: "success" | "error", message: string) => void,
+}
+
+interface EditCourseInfoProps extends ConnectedEditCourseInfoProps, EditCourseInfoStateProps, EditCourseInfoDispatchProps {}
+
 const EditCourseInfo: React.FC<EditCourseInfoProps> = ({
   open,
   id,
@@ -67,6 +79,7 @@ const EditCourseInfo: React.FC<EditCourseInfoProps> = ({
   semester,
   setYear,
   setSem,
+  addAlert,
 }) => {
   const styles = useStyles();
 
@@ -97,6 +110,10 @@ const EditCourseInfo: React.FC<EditCourseInfoProps> = ({
     if (res.status === "OK") {
       setYear(year);
       setSem(sem);
+      addAlert("success", "Update course info successfully!");
+    }
+    else {
+      addAlert("error", "Error occured while updating course info.");
     }
 
     setLoading(false);
@@ -173,4 +190,6 @@ const EditCourseInfo: React.FC<EditCourseInfoProps> = ({
   )
 }
 
-export default EditCourseInfo;
+const ConnectedEditCourseInfo: React.FC<ConnectedEditCourseInfoProps> = connect(null, { addAlert })(EditCourseInfo);
+
+export default ConnectedEditCourseInfo;

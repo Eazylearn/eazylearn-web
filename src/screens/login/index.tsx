@@ -22,6 +22,7 @@ import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { LoginPayload, login } from '../../utils/api';
 import { connect } from 'react-redux';
 import { AuthProps, saveAuth } from '../../reducers/auth';
+import { addAlert } from '../../reducers/alert';
 import { RootStateProps } from '../../reducers';
 import history from '../../utils/history';
 import Input from '../../components/Input';
@@ -95,11 +96,13 @@ interface LoginStateProps {
 
 interface LoginDispatchProps {
   saveAuth: typeof saveAuth,
+  addAlert: (type: "success" | "error", message: string) => void,
 }
 
 const Login: React.FC<LoginProps> = ({
   auth,
   saveAuth,
+  addAlert,
 }) => {
   const styles = useStyles();
 
@@ -133,12 +136,14 @@ const Login: React.FC<LoginProps> = ({
       window.localStorage.setItem("access_token", res.token);
       saveAuth(res.token, username);
       history.push("/");
+      addAlert("success", "Log in successfully!");
     }
   }
 
   useEffect(() => {
     if (auth.token !== "") {
       history.push("/");
+      addAlert("error", "You have already logged in.");
     }
   }, [auth]);
 
@@ -213,6 +218,6 @@ const Login: React.FC<LoginProps> = ({
   )
 }
 
-const ConnectedLogin: React.FC<ConnectedLoginProps> = connect((state: RootStateProps) => ({ auth: state.auth }), { saveAuth })(Login);
+const ConnectedLogin: React.FC<ConnectedLoginProps> = connect((state: RootStateProps) => ({ auth: state.auth }), { saveAuth, addAlert })(Login);
 
 export default ConnectedLogin;
