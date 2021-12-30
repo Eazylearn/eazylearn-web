@@ -210,6 +210,22 @@ export const removeStudents = async (payload: RemoveStudentRequest): Promise<Rem
   return await request.delete('/course/remove/student', {}, payload);
 }
 
+interface RemoveLecturerRequest {
+  body: Array<{
+    lecturerID: string,
+    courseID: string,
+  }>
+}
+
+interface RemoveLecturerResponse {
+  status: string,
+  message: any,
+}
+
+export const removeLecturers = async (payload: RemoveLecturerRequest): Promise<RemoveLecturerResponse> => {
+  return await request.delete('/course/remove/lecturer', {}, payload);
+}
+
 interface AssignStudentsRequest {
   body: Array<{
     studentID: string,
@@ -226,6 +242,21 @@ export const assignStudents = async (payload: AssignStudentsRequest): Promise<As
   return await request.post('/course/assign/student', payload);
 }
 
+interface AssignLecturersRequest {
+  body: Array<{
+    lecturerID: string,
+    courseID: string,
+  }>
+}
+
+interface AssignLecturersResponse {
+  status: string,
+  message: any,
+}
+
+export const assignLecturers = async (payload: AssignLecturersRequest): Promise<AssignLecturersResponse> => {
+  return await request.post('/course/assign/lecturer', payload);
+}
 // ========LECTURERS=========
 
 interface GetAllLecturersResponse {
@@ -235,6 +266,31 @@ interface GetAllLecturersResponse {
 
 export const getAllLecturers = async (): Promise<GetAllLecturersResponse> => {
   return await request.get('/lecturer');
+}
+
+interface CreateLecturerAccountRequest {
+  body: Array<{
+    username: string,
+    password: string,
+    name: string,
+    type: number,
+  }>
+}
+
+interface CreateLecturerAccountResponse {
+  message: string,
+  statusCode: number,
+  status?: string,
+  successful: string[],
+  badRequests: string[],
+  duplicates: string[],
+}
+
+export const createLecturerAccount = async (payload: CreateLecturerAccountRequest): Promise<CreateLecturerAccountResponse> => {
+  const res = await request.post('/account/create', payload);
+  res.badRequests = res.badRequests || [];
+  res.duplicates = res.duplicates || [];
+  return res;
 }
 
 // ===========STUDENTS=========
@@ -262,4 +318,30 @@ interface ApproveStudentsResponse {
 
 export const approveStudents = async (payload: ApproveStudentsRequest): Promise<ApproveStudentsResponse> => {
   return await request.put('/student/approve', payload);
+}
+
+interface CreateStudentAccountRequest {
+  body: Array<{
+    username: string,
+    password: string,
+    classId: string,
+    name: string,
+    type: number,
+  }>
+}
+
+interface CreateStudentAccountResponse {
+  message: string,
+  statusCode: number,
+  status?: string,
+  successful: string[],
+  badRequests: string[],
+  duplicates: string[],
+}
+
+export const createStudentAccount = async (payload: CreateStudentAccountRequest): Promise<CreateStudentAccountResponse> => {
+  const res = await request.post('/account/create', payload);
+  res.badRequests = res.badRequests || [];
+  res.duplicates = res.duplicates || [];
+  return res;
 }

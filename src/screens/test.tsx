@@ -1,5 +1,5 @@
 import { MenuItem, Select, Button } from '@material-ui/core';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, FormEventHandler, useState } from 'react';
 import { connect } from 'react-redux';
 import Input from '../components/Input';
 import { addAlert } from '../reducers/alert';
@@ -14,7 +14,7 @@ interface TestStateProps {
 }
 
 interface TestDispatchProps {
-  addAlert: (type: "success" | "error", message: string) => void,
+  addAlert: typeof addAlert,
 }
 
 interface TestProps extends ConnectedTestProps, TestDispatchProps, TestStateProps {}
@@ -42,6 +42,10 @@ const Test: React.FC<TestProps> = ({
     setMessage((e.target as HTMLInputElement).value);
   }
 
+  const handleUpload: FormEventHandler = (e: FormEvent) => {
+    // console.log((e.target as HTMLInputElement).files[0]);
+  }
+
   return (
     <div>
       <Select
@@ -67,6 +71,14 @@ const Test: React.FC<TestProps> = ({
         onClick={handleAddAlert}
       >
         Add!
+      </Button>
+      <Button variant="contained" color="secondary" component="label">
+        Upload
+        <input
+          type="file"
+          onInput={handleUpload}
+          hidden
+        />
       </Button>
     </div>
   )

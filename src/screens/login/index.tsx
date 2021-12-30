@@ -145,7 +145,7 @@ const Login: React.FC<LoginProps> = ({
       history.push("/");
       addAlert("error", "You have already logged in.");
     }
-  }, [auth]);
+  }, [auth, addAlert]);
 
   return (
     <div className={styles.loginContainer}>

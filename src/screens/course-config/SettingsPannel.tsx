@@ -153,7 +153,7 @@ interface DeletePanelStateProps {
 }
 
 interface DeletePanelDispatchProps {
-  addAlert: (type: "success" | "error", message: string) => void,
+  addAlert: typeof addAlert,
 }
 
 interface DeletePanelProps extends ConnectedDeletePanelProps, DeletePanelStateProps, DeletePanelDispatchProps {}
@@ -178,7 +178,7 @@ const DeletePanel: React.FC<DeletePanelProps> = ({
       history.push('/');
     }
     else {
-      addAlert("error", "Error occured while deleting course.");
+      addAlert("error", "Error occurred while deleting course.");
     }
     
     return;

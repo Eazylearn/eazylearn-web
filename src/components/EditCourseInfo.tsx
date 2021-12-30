@@ -66,7 +66,7 @@ interface EditCourseInfoStateProps {
 }
 
 interface EditCourseInfoDispatchProps {
-  addAlert: (type: "success" | "error", message: string) => void,
+  addAlert: typeof addAlert,
 }
 
 interface EditCourseInfoProps extends ConnectedEditCourseInfoProps, EditCourseInfoStateProps, EditCourseInfoDispatchProps {}
@@ -113,7 +113,7 @@ const EditCourseInfo: React.FC<EditCourseInfoProps> = ({
       addAlert("success", "Update course info successfully!");
     }
     else {
-      addAlert("error", "Error occured while updating course info.");
+      addAlert("error", "Error occurred while updating course info.");
     }
 
     setLoading(false);

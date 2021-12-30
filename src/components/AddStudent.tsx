@@ -80,7 +80,7 @@ interface AddStudentStateProps {
 }
 
 interface AddStudentDispatchProps {
-  addAlert: (type: "success" | "error", message: string) => void,
+  addAlert: typeof addAlert,
 }
 
 interface AddStudentProps extends ConnectedAddStudentProps, AddStudentStateProps, AddStudentDispatchProps {}
@@ -99,7 +99,7 @@ const AddStudent: React.FC<AddStudentProps> = ({
   const [studentList, setStudentList] = useState<CourseStudent[]>([]);
   const [shownList, setShownList] = useState<CheckStudent[]>([]);
   const [searchTimeout, setSearchTimeout] = useState<number>(0);
-  const [seed, setSeed] = useState<number>(0);
+  const [, setSeed] = useState<number>(0);
 
   const forceUpdate = () => setSeed(Math.random());
 
@@ -119,14 +119,14 @@ const AddStudent: React.FC<AddStudentProps> = ({
         );
       }
       else {
-        // alert error message
+        addAlert("error", "Error occurred while getting student list.");
       }
 
       setLoading(false);
     }
 
     _getStudents();
-  }, [exclude])
+  }, [exclude, addAlert])
 
 	const searchHandler = (text: string) => (student: CourseStudent): boolean => {
 		return student.student_name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
@@ -156,7 +156,7 @@ const AddStudent: React.FC<AddStudentProps> = ({
       addAlert("success", "Add students to course successfully!");
     }
     else {
-      addAlert("error", "Error occured while adding students to course.");
+      addAlert("error", "Error occurred while adding students to course.");
     }
   }
 
