@@ -5,6 +5,8 @@ import { CheckStudent } from '../screens/course-config/StudentList';
 import { assignStudents, getAllStudents } from '../utils/api';
 import { CourseStudent } from '../utils/types';
 import StudentItem from './list-item/student';
+import { addAlert } from '../reducers/alert';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -65,7 +67,7 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-interface AddStudentProps {
+interface ConnectedAddStudentProps {
   open: boolean,
   handleClose: () => void,
   exclude: string[],
@@ -73,12 +75,23 @@ interface AddStudentProps {
   reload: () => void,
 }
 
+interface AddStudentStateProps {
+
+}
+
+interface AddStudentDispatchProps {
+  addAlert: (type: "success" | "error", message: string) => void,
+}
+
+interface AddStudentProps extends ConnectedAddStudentProps, AddStudentStateProps, AddStudentDispatchProps {}
+
 const AddStudent: React.FC<AddStudentProps> = ({
   open,
   handleClose,
   exclude = [],
   courseID,
   reload,
+  addAlert,
 }) => {
   const styles = useStyles();
 
@@ -140,6 +153,10 @@ const AddStudent: React.FC<AddStudentProps> = ({
     if (res.status === "OK") {
       reload();
       handleClose();
+      addAlert("success", "Add students to course successfully!");
+    }
+    else {
+      addAlert("error", "Error occured while adding students to course.");
     }
   }
 
@@ -218,4 +235,6 @@ const AddStudent: React.FC<AddStudentProps> = ({
   )
 }
 
-export default AddStudent;
+const ConnectedAddStudent: React.FC<ConnectedAddStudentProps> = connect(null, { addAlert })(AddStudent);
+
+export default ConnectedAddStudent;

@@ -9,10 +9,8 @@ import StudentList from './StudentList';
 import LecturerList from './LecturerList';
 import SettingsPanel from './SettingsPannel';
 import CourseInfo from './CourseInfo';
-
-interface CourseConfigProps {
-
-}
+import { addAlert } from '../../reducers/alert';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -79,7 +77,25 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const CourseConfig: React.FC<CourseConfigProps> = () => {
+interface ConnectedCourseConfigProps {
+
+}
+
+interface CourseConfigStateProps {
+
+}
+
+interface CourseConfigDispatchProps {
+  addAlert: (type: "success" | "error", message: string) => void,
+}
+
+interface CourseConfigProps extends ConnectedCourseConfigProps, CourseConfigStateProps, CourseConfigDispatchProps {
+
+}
+
+const CourseConfig: React.FC<CourseConfigProps> = ({
+  addAlert,
+}) => {
   
   const styles = useStyles();
   const { id } = useParams<{ id: string }>();
@@ -154,7 +170,21 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
     setEdit(false);
 
     if (res.status === "OK") {
-      history.push(`/course/${courseID}`);
+      if (id === "new") {
+        addAlert("success", "Create course successfully!");
+        history.push(`/course/${courseID}`);
+      }
+      else {
+        addAlert("success", "Update course successfully!");
+      }
+    }
+    else {
+      if (id === "new") {
+        addAlert("error", "Error occured while creating course.");
+      }
+      else {
+        addAlert("error", "Error occured while updating course.");
+      }
     }
   }
 
@@ -262,4 +292,6 @@ const CourseConfig: React.FC<CourseConfigProps> = () => {
   )
 }
 
-export default CourseConfig;
+const ConnectedCourseConfig: React.FC<ConnectedCourseConfigProps> = connect(null, { addAlert })(CourseConfig);
+
+export default ConnectedCourseConfig;

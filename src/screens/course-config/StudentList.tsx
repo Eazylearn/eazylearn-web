@@ -5,6 +5,8 @@ import { KeyboardArrowDown, Search } from '@material-ui/icons';
 import StudentItem from '../../components/list-item/student';
 import AddStudent from '../../components/AddStudent';
 import { approveStudents, removeStudents } from '../../utils/api';
+import { connect } from 'react-redux';
+import { addAlert } from '../../reducers/alert';
 
 const useStudentListStyle = makeStyles(theme => ({
 	container: {
@@ -41,7 +43,6 @@ const useStudentListStyle = makeStyles(theme => ({
 		width: "100%",
 	},
 	actionContainer: {
-		zIndex: 1,
 		position: "absolute",
 		top: 0,
 		right: 0,
@@ -86,16 +87,27 @@ export interface CheckStudent extends CourseStudent {
 	checked: boolean,
 }
 
-interface StudentListProps {
+interface ConnectedStudentListProps {
 	reload: () => void,
 	studentList: Array<CourseStudent>,
 	courseID: string
 }
 
+interface StudentListStateProps {
+
+}
+
+interface StudentListDispatchProps {
+  addAlert: (type: "success" | "error", message: string) => void,
+}
+
+interface StudentListProps extends ConnectedStudentListProps, StudentListStateProps, StudentListDispatchProps {}
+
 const StudentList: React.FC<StudentListProps> = ({
 	reload,
 	studentList,
 	courseID,
+	addAlert
 }) => {
 	const styles = useStudentListStyle();
 	const [searchTimeout, setSearchTimeout] = useState<number>(0);
@@ -147,10 +159,11 @@ const StudentList: React.FC<StudentListProps> = ({
 
 		const res = await approveStudents({ body: payload });
 		if (res.status === "OK") {
+			addAlert("success", "Approve students successfully!");
 			reload()
 		}
 		else {
-			// failed
+			addAlert("error", "Error occured while approving students.");
 		}
 	}
 
@@ -162,10 +175,11 @@ const StudentList: React.FC<StudentListProps> = ({
 
 		const res = await removeStudents({ body: payload });
 		if (res.status === "OK") {
+			addAlert("success", "Remove students successfully!");
 			reload()
 		}
 		else {
-			//failed
+			addAlert("error", "Error occured while removing students.");
 		}
 	}
 
@@ -396,4 +410,6 @@ const StudentList: React.FC<StudentListProps> = ({
 	)
 }
 
-export default StudentList;
+const ConnectedStudentList: React.FC<ConnectedStudentListProps> = connect(null, { addAlert })(StudentList);
+
+export default ConnectedStudentList;

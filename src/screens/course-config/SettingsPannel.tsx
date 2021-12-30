@@ -1,7 +1,9 @@
 import { Backdrop, Button, CircularProgress, ClickAwayListener, makeStyles, Modal, Slide, Typography } from '@material-ui/core';
 import React, { MouseEventHandler, useState } from 'react';
+import { connect } from 'react-redux';
 import { deleteCourse } from '../../utils/api';
 import history from '../../utils/history';
+import { addAlert } from '../../reducers/alert';
 
 const useSettingsPanelStyles = makeStyles(theme => ({
   modal: {
@@ -71,7 +73,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
       <div className={styles.container}>
         <ClickAwayListener onClickAway={handleClose}>
           <div className={styles.content}>
-            <DeletePanel
+            <ConnectedDeletePanel
               open={openDelete}
               handleClose={handleCloseDelete}
               id={id}
@@ -140,16 +142,27 @@ const useDeletePanelStyles = makeStyles(theme => ({
   }
 }))
 
-interface DeletePanelProps {
+interface ConnectedDeletePanelProps {
   open: boolean,
   handleClose: MouseEventHandler,
   id: string
 }
 
+interface DeletePanelStateProps {
+
+}
+
+interface DeletePanelDispatchProps {
+  addAlert: (type: "success" | "error", message: string) => void,
+}
+
+interface DeletePanelProps extends ConnectedDeletePanelProps, DeletePanelStateProps, DeletePanelDispatchProps {}
+
 const DeletePanel: React.FC<DeletePanelProps> = ({
   open,
   handleClose,
-  id
+  id,
+  addAlert,
 }) => {
   const styles = useDeletePanelStyles();
 
@@ -161,9 +174,13 @@ const DeletePanel: React.FC<DeletePanelProps> = ({
     setLoading(false);
 
     if (res.status === "OK") {
+      addAlert("success", "Delete course successfully!");
       history.push('/');
     }
-
+    else {
+      addAlert("error", "Error occured while deleting course.");
+    }
+    
     return;
   }
 
@@ -209,5 +226,7 @@ const DeletePanel: React.FC<DeletePanelProps> = ({
     </Modal>
   )
 }
+
+const ConnectedDeletePanel: React.FC<ConnectedDeletePanelProps> = connect(null, { addAlert })(DeletePanel);
 
 export default SettingsPanel;

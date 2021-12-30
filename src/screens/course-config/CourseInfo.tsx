@@ -9,6 +9,7 @@ const useCourseInfoStyle = makeStyles(theme => ({
     background: theme.palette.background.paper,
     boxShadow: "0px 16px 40px rgba(0, 0, 0, 0.15)",
     borderRadius: 20,
+    marginTop: 30,
   },
   content: {
     display: "flex",
