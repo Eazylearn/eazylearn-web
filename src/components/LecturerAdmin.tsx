@@ -1,7 +1,7 @@
 import { Button, CircularProgress, ClickAwayListener, Collapse, InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import { KeyboardArrowDown, Search } from '@material-ui/icons';
-import React, { ChangeEvent, ChangeEventHandler, FormEvent, FormEventHandler, MouseEventHandler, useEffect, useState } from 'react';
-import { getAllLecturers } from '../utils/api';
+import React, { ChangeEvent, ChangeEventHandler, FormEvent, FormEventHandler, MouseEventHandler, useCallback, useEffect, useState } from 'react';
+import { createLecturerAccount, getAllLecturers } from '../utils/api';
 import { csvToLecturerList } from '../utils/helpers';
 import { CourseLecturer } from '../utils/types';
 import LecturerItem from './list-item/lecturer';
@@ -78,7 +78,7 @@ interface LecturerAdminStateProps {
 }
 
 interface LecturerAdminDispatchProps {
-  addAlert: (type: "success" | "error", message: string) => void,
+  addAlert: typeof addAlert,
 }
 
 interface LecturerAdminProps extends ConnectedLecturerAdminProps, LecturerAdminStateProps, LecturerAdminDispatchProps {}
@@ -105,24 +105,24 @@ const LecturerAdmin: React.FC<LecturerAdminProps> = ({
     setSearchTimeout(window.setTimeout(() => setShownList(lecturerList.filter(searchHandler(searchText))), 500));
   }
 
-  useEffect(() => {
-    const _getLecturers = async () => {
-      setLoading(true);
+  const _getLecturers = useCallback(async () => {
+    setLoading(true);
 
-      const res = await getAllLecturers();
-      if (res.status === "OK") {
-        setLecturerList(res.lecturers);
-        setShownList(res.lecturers);
-      }
-      else {
-        addAlert("error", "Error occured while getting lecturer list.");
-      }
-
-      setLoading(false);
+    const res = await getAllLecturers();
+    if (res.status === "OK") {
+      setLecturerList(res.lecturers);
+      setShownList(res.lecturers);
+    }
+    else {
+      addAlert("error", "Error occurred while getting lecturer list.");
     }
 
+    setLoading(false);
+  }, [addAlert]);
+
+  useEffect(() => {
     _getLecturers();
-  }, [addAlert])
+  }, [_getLecturers])
 
   const handleClickAction: MouseEventHandler = () => {
 		setOpenAction(prevState => !prevState);
@@ -142,6 +142,24 @@ const LecturerAdmin: React.FC<LecturerAdminProps> = ({
     }
 
     console.log(parsed);
+    
+    const payload = parsed.map(lecturer => ({
+      username: lecturer.lecturer_id,
+      password: lecturer.password,
+      name: lecturer.lecturer_name,
+      type: 1, // lecturer
+    }));
+
+    const res = await createLecturerAccount({ body: payload });
+    if (res.status === "OK" && res.badRequests.length === 0 && res.duplicates.length === 0) {
+      addAlert("success", `Create ${res.successful.length} lecturer accounts successfully!`);
+    }
+    else {
+      addAlert("error", `Only created ${res.successful.length} lecturer accounts, ${res.badRequests.length} have invalid data and ${res.duplicates.length} accounts already exist`, 5000);
+    }
+    setOpenAction(false);
+
+    _getLecturers();
   }
 
   return (

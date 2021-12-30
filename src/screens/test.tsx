@@ -14,7 +14,7 @@ interface TestStateProps {
 }
 
 interface TestDispatchProps {
-  addAlert: (type: "success" | "error", message: string) => void,
+  addAlert: typeof addAlert,
 }
 
 interface TestProps extends ConnectedTestProps, TestDispatchProps, TestStateProps {}

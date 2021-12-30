@@ -1,6 +1,6 @@
 import { IconButton, Typography, makeStyles, Checkbox, ClickAwayListener, Collapse } from '@material-ui/core';
-import { Delete, MoreVert } from '@material-ui/icons';
-import React, { ChangeEvent, ChangeEventHandler, ReactNode, useState } from 'react';
+import { MoreVert } from '@material-ui/icons';
+import React, { ChangeEventHandler, ReactNode, useState } from 'react';
 
 const useStyles = makeStyles(theme => ({
   container: {

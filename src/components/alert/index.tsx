@@ -48,6 +48,7 @@ const AlertContainer: React.FC<AlertContainerProps> = ({
           <AlertItem
             type={a.type}
             message={a.message}
+            duration={a.duration}
             key={ind}
           />
         ))

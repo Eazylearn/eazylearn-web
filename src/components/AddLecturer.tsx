@@ -77,7 +77,7 @@ interface AddLecturerStateProps {
 }
 
 interface AddLecturerDispatchProps {
-  addAlert: (type: "success" | "error", message: string) => void,
+  addAlert: typeof addAlert,
 }
 
 interface AddLecturerProps extends ConnectedAddLecturerProps, AddLecturerStateProps, AddLecturerDispatchProps {}
@@ -120,7 +120,7 @@ const AddLecturer: React.FC<AddLecturerProps> = ({
         );
       }
       else {
-        addAlert("error", "Error occured while getting lecturer list.");
+        addAlert("error", "Error occurred while getting lecturer list.");
       }
 
       setLoading(false);
@@ -158,7 +158,7 @@ const AddLecturer: React.FC<AddLecturerProps> = ({
       addAlert("success", "Add lecturers to course successfully!");
     }
     else {
-      addAlert("error", "Error occured while adding lecturers to course.");
+      addAlert("error", "Error occurred while adding lecturers to course.");
     }
   }
 

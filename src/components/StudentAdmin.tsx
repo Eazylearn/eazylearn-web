@@ -1,7 +1,7 @@
 import { Button, CircularProgress, ClickAwayListener, Collapse, InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import { KeyboardArrowDown, Search } from '@material-ui/icons';
-import React, { ChangeEvent, ChangeEventHandler, FormEvent, FormEventHandler, MouseEventHandler, useEffect, useState } from 'react';
-import { getAllStudents } from '../utils/api';
+import React, { ChangeEvent, ChangeEventHandler, FormEvent, FormEventHandler, MouseEventHandler, useCallback, useEffect, useState } from 'react';
+import { createStudentAccount, getAllStudents } from '../utils/api';
 import { csvToStudentList } from '../utils/helpers';
 import { Student } from '../utils/types';
 import StudentItem from './list-item/student';
@@ -78,7 +78,7 @@ interface StudentAdminStateProps {
 }
 
 interface StudentAdminDispatchProps {
-  addAlert: (type: "success" | "error", message: string) => void,
+  addAlert: typeof addAlert,
 }
 
 interface StudentAdminProps extends ConnectedStudentAdminProps, StudentAdminStateProps, StudentAdminDispatchProps {}
@@ -105,24 +105,24 @@ const StudentAdmin: React.FC<StudentAdminProps> = ({
     setSearchTimeout(window.setTimeout(() => setShownList(studentList.filter(searchHandler(searchText))), 500));
   }
 
-  useEffect(() => {
-    const _getStudents = async () => {
-      setLoading(true);
+  const _getStudents = useCallback(async () => {
+    setLoading(true);
 
-      const res = await getAllStudents();
-      if (res.status === "OK") {
-        setStudentList(res.students);
-        setShownList(res.students);
-      }
-      else {
-        addAlert("error", "Error occured while getting student list.");
-      }
-
-      setLoading(false);
+    const res = await getAllStudents();
+    if (res.status === "OK") {
+      setStudentList(res.students);
+      setShownList(res.students);
+    }
+    else {
+      addAlert("error", "Error occurred while getting student list.");
     }
 
+    setLoading(false);
+  }, [addAlert]);
+
+  useEffect(() => {
     _getStudents();
-  }, [addAlert])
+  }, [_getStudents])
 
   const handleClickAction: MouseEventHandler = () => {
 		setOpenAction(prevState => !prevState);
@@ -140,8 +140,25 @@ const StudentAdmin: React.FC<StudentAdminProps> = ({
       addAlert("error", parsed);
       return
     }
+    
+    const payload = parsed.map(student => ({
+      username: student.student_id,
+      password: student.password,
+      classId: student.class_id,
+      name: student.student_name,
+      type: 2, // student
+    }));
 
-    console.log(parsed); // TODO
+    const res = await createStudentAccount({ body: payload });
+    if (res.status === "OK" && res.badRequests.length === 0 && res.duplicates.length === 0) {
+      addAlert("success", `Create ${res.successful.length} student accounts successfully!`);
+    }
+    else {
+      addAlert("error", `Only created ${res.successful.length} student accounts, ${res.badRequests.length} have invalid data and ${res.duplicates.length} accounts already exist`, 5000);
+    }
+    setOpenAction(false);
+
+    _getStudents();
   }
 
   return (

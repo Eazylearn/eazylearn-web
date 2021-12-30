@@ -86,7 +86,7 @@ interface CourseConfigStateProps {
 }
 
 interface CourseConfigDispatchProps {
-  addAlert: (type: "success" | "error", message: string) => void,
+  addAlert: typeof addAlert,
 }
 
 interface CourseConfigProps extends ConnectedCourseConfigProps, CourseConfigStateProps, CourseConfigDispatchProps {
@@ -180,10 +180,10 @@ const CourseConfig: React.FC<CourseConfigProps> = ({
     }
     else {
       if (id === "new") {
-        addAlert("error", "Error occured while creating course.");
+        addAlert("error", "Error occurred while creating course.");
       }
       else {
-        addAlert("error", "Error occured while updating course.");
+        addAlert("error", "Error occurred while updating course.");
       }
     }
   }

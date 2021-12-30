@@ -5,6 +5,7 @@ import { alertDuration } from '../utils/consts';
 export type AlertProps = Array<{
   type: "success" | "error",
   message: string,
+  duration: number,
 }>
 
 const defaultAlert: AlertProps = [];
@@ -17,13 +18,15 @@ export const ALERT_ACTION_TYPES = {
 export interface AlertActionData {
   type: "success" | "error",
   message: string,
+  duration?: number,
 }
 
-export const addAlert = (type: "success" | "error", message: string) => ({
+export const addAlert = (type: "success" | "error", message: string, duration?: number) => ({
   type: ALERT_ACTION_TYPES.add,
   data: {
     type,
     message,
+    duration,
   }
 })
 
@@ -34,9 +37,9 @@ export const popAlert = () => ({
 const alertReducer = (alert: AlertProps = defaultAlert, action: Action<AlertActionData>) => {
   switch (action.type) {
     case ALERT_ACTION_TYPES.add: {
-      const { type, message } = action.data;
-      alert = [...alert, { type, message }];
-      window.setTimeout(() => store.dispatch(popAlert()), alertDuration);
+      const { type, message, duration = alertDuration } = action.data;
+      alert = [...alert, { type, message, duration }];
+      window.setTimeout(() => store.dispatch(popAlert()), duration);
       return alert;
     }
     case ALERT_ACTION_TYPES.pop: {

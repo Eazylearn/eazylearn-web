@@ -1,7 +1,6 @@
 import { makeStyles, Typography } from '@material-ui/core';
 import { Check, Clear } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-import { alertDuration } from '../../utils/consts';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -97,19 +96,21 @@ const useStyles = makeStyles(theme => ({
 interface AlertItemProps {
   type: "success" | "error",
   message: string,
+  duration: number,
 }
 
 const AlertItem: React.FC<AlertItemProps> = ({
   type,
   message,
+  duration,
 }) => {
   const styles = useStyles();
 
   const [close, setClose] = useState<boolean>(false);
 
   useEffect(() => {
-    window.setTimeout(() => setClose(true), alertDuration - 250)
-  }, [])
+    window.setTimeout(() => setClose(true), duration - 250)
+  }, [duration])
 
   return (
     <div className={`${styles.container} ${close ? styles.close : ""}`}>

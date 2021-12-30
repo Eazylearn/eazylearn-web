@@ -63,7 +63,7 @@ interface LecturerListStateProps {
 }
 
 interface LecturerListDispatchProps {
-  addAlert: (type: "success" | "error", message: string) => void,
+  addAlert: typeof addAlert,
 }
 
 interface LecturerListProps extends ConnectedLecturerListProps, LecturerListStateProps, LecturerListDispatchProps {}
@@ -90,7 +90,7 @@ const LecturerList: React.FC<LecturerListProps> = ({
 			addAlert("success", "Remove lecturers successfully!");
 		}
 		else {
-			addAlert("error", "Error occured while removing students.");
+			addAlert("error", "Error occurred while removing students.");
 		}
   }
 

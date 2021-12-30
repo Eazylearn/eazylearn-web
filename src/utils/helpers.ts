@@ -101,8 +101,8 @@ export const csvToLecturerList = (csv: string): LecturerAccount[] | string => {
   const res: LecturerAccount[] = lines.slice(1).map(line => ({
     lecturer_name: line[0],
     lecturer_id: line[1],
-    account_id: line[3],
-    password: line[4], 
+    account_id: line[2],
+    password: line[3], 
   }));
 
   return res;
