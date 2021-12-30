@@ -3,7 +3,10 @@ import { Add } from '@material-ui/icons';
 import React, { useState } from 'react';
 import AddLecturer from '../../components/AddLecturer';
 import LecturerItem from '../../components/list-item/lecturer';
+import { removeLecturers } from '../../utils/api';
 import { CourseLecturer } from '../../utils/types';
+import { connect } from 'react-redux';
+import { addAlert } from '../../reducers/alert';
 
 const useLecturerListStyle = makeStyles(theme => ({
   container: {
@@ -36,22 +39,57 @@ const useLecturerListStyle = makeStyles(theme => ({
   },
 }))
 
-interface LecturerListProps {
+interface ConnectedLecturerListProps {
+  reload: () => void,
   lecturerList: Array<CourseLecturer>,
+  courseID: string,
 }
 
+interface LecturerListStateProps {
+
+}
+
+interface LecturerListDispatchProps {
+  addAlert: (type: "success" | "error", message: string) => void,
+}
+
+interface LecturerListProps extends ConnectedLecturerListProps, LecturerListStateProps, LecturerListDispatchProps {}
+
 const LecturerList: React.FC<LecturerListProps> = ({
-  lecturerList
+  reload,
+  lecturerList,
+  courseID,
+  addAlert
 }) => {
   const styles = useLecturerListStyle();
 
 	const [openManualAdd, setOpenManualAdd] = useState<boolean>(false);
+
+  const handleRemove = async (id: string) => {
+		const payload = [{
+			lecturerID: id,
+			courseID,
+		}]
+
+		const res = await removeLecturers({ body: payload });
+		if (res.status === "OK") {
+			reload()
+			addAlert("success", "Remove lecturers successfully!");
+		}
+		else {
+			addAlert("error", "Error occured while removing students.");
+		}
+
+  }
 
   return (
     <section className={styles.container}>
       <AddLecturer
         open={openManualAdd}
         handleClose={() => setOpenManualAdd(false)}
+        exclude={lecturerList.map(l => l.lecturer_id)}
+        courseID={courseID}
+        reload={reload}
       />
       <div className={styles.content}>
         <div className={styles.header}>
@@ -62,7 +100,7 @@ const LecturerList: React.FC<LecturerListProps> = ({
             className={styles.addButton}
             color="secondary"
             variant="contained"
-            // onClick={() => setOpenManualAdd(true)} TODO
+            onClick={() => setOpenManualAdd(true)}
           >
             <Add />
           </Button>
@@ -73,6 +111,7 @@ const LecturerList: React.FC<LecturerListProps> = ({
               <LecturerItem
                 key={ind}
                 name={lecturer.lecturer_name}
+                action={() => handleRemove(lecturer.lecturer_id)}
               />
             ))
           }
@@ -82,4 +121,6 @@ const LecturerList: React.FC<LecturerListProps> = ({
   )
 }
 
-export default LecturerList;
+const ConnectedLecturerList: React.FC<ConnectedLecturerListProps> = connect(null, { addAlert })(LecturerList);
+
+export default ConnectedLecturerList;

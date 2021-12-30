@@ -1,11 +1,6 @@
-import { IconButton, Typography, makeStyles } from '@material-ui/core';
+import { IconButton, Typography, makeStyles, Checkbox } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
-import React from 'react';
-
-interface LecturerItemProps {
-  name: string,
-  action?: any,
-}
+import React, { ChangeEvent, ChangeEventHandler } from 'react';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -22,6 +17,9 @@ const useStyles = makeStyles(theme => ({
       borderColor: theme.palette.secondary.main,
     }
   },
+  checkbox: {
+
+  },
   content: {
     display: "inline-flex",
     alignItems: "center",
@@ -35,27 +33,69 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+interface LecturerItemProps {
+  name: string,
+  checked?: boolean,
+  action?: () => void,
+  onChange?: ChangeEventHandler,
+  showChecked?: boolean,
+  showAction?: boolean,
+}
+
 const LecturerItem: React.FC<LecturerItemProps> = ({
   name,
   action = null,
+  checked = false,
+  onChange = null,
+  showChecked = false,
+  showAction = true,
 }) => {
 
   const styles = useStyles();
 
+  const handleAction = () => {
+    if (action)
+      action();
+
+    return;
+  }
+
+  const handleChange: ChangeEventHandler = (event: ChangeEvent) => {
+    if (onChange)
+      onChange(event);
+
+    return;
+  }
+
   return (
-    <div className={styles.container}>
+    <div style={{ gridTemplateColumns: showChecked ? "50px 1fr 50px" : "1fr 50px" }} className={styles.container}>
+      {
+        showChecked && (
+          <Checkbox
+            checked={checked}
+            className={styles.checkbox}
+            color="secondary"
+            onChange={handleChange}
+          />
+        )
+      }
       <div className={styles.content}>
         <Typography style={{ color: "#3A3A3A", width: 200, marginRight: 20 }} variant="body1" color="initial">
           {name}
         </Typography>
       </div>
-      <div>
-        <IconButton
-          className={styles.action}
-          onClick={action}>
-          <Delete />
-        </IconButton>
-      </div>
+      {
+        showAction && (
+          <div>
+            <IconButton
+              className={styles.action}
+              onClick={handleAction}
+            >
+              <Delete />
+            </IconButton>
+          </div>
+        )
+      }
     </div>
   )
 }

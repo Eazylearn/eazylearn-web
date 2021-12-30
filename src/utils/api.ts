@@ -210,6 +210,22 @@ export const removeStudents = async (payload: RemoveStudentRequest): Promise<Rem
   return await request.delete('/course/remove/student', {}, payload);
 }
 
+interface RemoveLecturerRequest {
+  body: Array<{
+    lecturerID: string,
+    courseID: string,
+  }>
+}
+
+interface RemoveLecturerResponse {
+  status: string,
+  message: any,
+}
+
+export const removeLecturers = async (payload: RemoveLecturerRequest): Promise<RemoveLecturerResponse> => {
+  return await request.delete('/course/remove/lecturer', {}, payload);
+}
+
 interface AssignStudentsRequest {
   body: Array<{
     studentID: string,
@@ -226,6 +242,21 @@ export const assignStudents = async (payload: AssignStudentsRequest): Promise<As
   return await request.post('/course/assign/student', payload);
 }
 
+interface AssignLecturersRequest {
+  body: Array<{
+    lecturerID: string,
+    courseID: string,
+  }>
+}
+
+interface AssignLecturersResponse {
+  status: string,
+  message: any,
+}
+
+export const assignLecturers = async (payload: AssignLecturersRequest): Promise<AssignLecturersResponse> => {
+  return await request.post('/course/assign/lecturer', payload);
+}
 // ========LECTURERS=========
 
 interface GetAllLecturersResponse {

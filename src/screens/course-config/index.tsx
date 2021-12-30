@@ -279,7 +279,11 @@ const CourseConfig: React.FC<CourseConfigProps> = ({
         />
       </div>
       <div className={styles.sidePanel}>
-        <LecturerList lecturerList={course.lecturers} />
+        <LecturerList
+          lecturerList={course.lecturers}
+          courseID={course.course_id}
+          reload={handleReload}
+        />
         <CourseInfo
           id={id}
           academicYear={courseYear}

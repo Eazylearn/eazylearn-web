@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { RootStateProps } from '../../reducers';
 import { AlertProps } from '../../reducers/alert';
