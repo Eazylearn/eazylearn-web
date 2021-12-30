@@ -20,12 +20,14 @@ const useStyles = makeStyles(theme => ({
     }
   },
   checkbox: {
+    gridColumn: 1,
     position: "relative",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
   },
   content: {
+    gridColumn: 2,
     display: "inline-flex",
     alignItems: "center",
   },
@@ -46,20 +48,22 @@ interface StudentItemProps {
   name: string,
   id?: string,
   status?: number,
-  checked: boolean,
-  onChange: ChangeEventHandler,
+  checked?: boolean,
+  onChange?: ChangeEventHandler,
   options?: ReactNode,
   showOptions?: boolean,
+  showChecked?: boolean,
 }
 
 const StudentItem: React.FC<StudentItemProps> = ({
   name,
   id = "",
   status = -1,
-  checked,
+  checked = false,
   onChange,
   options = <></>,
   showOptions = true,
+  showChecked = true,
 }) => {
 
   const styles = useStyles();
@@ -68,14 +72,18 @@ const StudentItem: React.FC<StudentItemProps> = ({
 
   return (
     <div className={styles.container}>
-      <div>
-        <Checkbox
-          checked={checked}
-          className={styles.checkbox}
-          color="secondary"
-          onChange={onChange}
-        />
-      </div>
+      {
+        showChecked && (
+          <div>
+            <Checkbox
+              checked={checked}
+              className={styles.checkbox}
+              color="secondary"
+              onChange={onChange}
+            />
+          </div>
+        )
+      }
       <div className={styles.content}>
         <Typography style={{ color: "#3A3A3A", width: 300, marginRight: 20 }} variant="body1" color="initial">
           {name}

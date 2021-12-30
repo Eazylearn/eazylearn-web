@@ -1,10 +1,12 @@
-import { Button, CircularProgress, InputAdornment, makeStyles, TextField } from '@material-ui/core';
+import { Button, CircularProgress, ClickAwayListener, Collapse, InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import { KeyboardArrowDown, Search } from '@material-ui/icons';
-import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react';
+import React, { ChangeEvent, ChangeEventHandler, FormEvent, FormEventHandler, MouseEventHandler, useEffect, useState } from 'react';
 import { getAllStudents } from '../utils/api';
+import { csvToStudentList } from '../utils/helpers';
 import { Student } from '../utils/types';
 import StudentItem from './list-item/student';
-
+import { addAlert } from '../reducers/alert';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -21,6 +23,7 @@ const useStyles = makeStyles(theme => ({
     padding: 40,
   },
   toolContainer: {
+		position: "relative",
     display: "flex",
     width: "100%",
     flexDirection: "row",
@@ -36,6 +39,27 @@ const useStyles = makeStyles(theme => ({
       boxShadow: "0px 3px 3px rgba(49, 133, 252, 0.24)",
     },
   },
+	actionContainer: {
+		position: "absolute",
+		top: 0,
+		right: 0,
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "flex-end",
+	},
+	actionContent: {
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "stretch",
+
+		"& button": {
+			fontWeight: "bold",
+			textTransform: "none",
+			"& span": {
+				justifyContent: "flex-end",
+			}
+		}
+	},
   listContainer: {
     width: "100%",
     position: "relative",
@@ -46,17 +70,29 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-interface StudentAdminProps {
+interface ConnectedStudentAdminProps {
+}
+
+interface StudentAdminStateProps {
 
 }
 
-const StudentAdmin: React.FC<StudentAdminProps> = () => {
+interface StudentAdminDispatchProps {
+  addAlert: (type: "success" | "error", message: string) => void,
+}
+
+interface StudentAdminProps extends ConnectedStudentAdminProps, StudentAdminStateProps, StudentAdminDispatchProps {}
+
+const StudentAdmin: React.FC<StudentAdminProps> = ({
+  addAlert,
+}) => {
   const styles = useStyles();
 
   const [studentList, setStudentList] = useState<Student[]>([]);
   const [shownList, setShownList] = useState<Student[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchTimeout, setSearchTimeout] = useState<number>(0);
+	const [openAction, setOpenAction] = useState<boolean>(false);
 
   const searchHandler = (text: string) => (value: Student): boolean => {
     return value.student_name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
@@ -79,21 +115,33 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
         setShownList(res.students);
       }
       else {
-        // alert error message
+        addAlert("error", "Error occured while getting student list.");
       }
 
       setLoading(false);
     }
 
     _getStudents();
-  }, [])
+  }, [addAlert])
 
   const handleClickAction: MouseEventHandler = () => {
-    // TODO
+		setOpenAction(prevState => !prevState);
   }
 
-  const handleCheckStudent = (id: string): ChangeEventHandler => (event: ChangeEvent): void => {
-    // do sth
+  const handleUpload: FormEventHandler = async (event: FormEvent) => {
+    const files = (event.target as HTMLInputElement).files;
+    if (files === null || files.length === 0) {
+      addAlert("error", "File not found.");
+      return;
+    }
+    const text = await files[0].text();
+    const parsed = csvToStudentList(text);
+    if (typeof parsed === "string") {
+      addAlert("error", parsed);
+      return
+    }
+
+    console.log(parsed); // TODO
   }
 
   return (
@@ -113,14 +161,51 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
             placeholder="Search"
             className={styles.searchBar}
           />
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleClickAction}
-            style={{ fontWeight: "bold", borderRadius: 10 }}
-          >
-            Action <KeyboardArrowDown />
-          </Button>
+					<ClickAwayListener onClickAway={() => setOpenAction(false)}>
+						<div className={styles.actionContainer}>
+							<Button
+								variant="contained"
+								color="secondary"
+								onClick={handleClickAction}
+								style={{ 
+									fontWeight: "bold", 
+									borderRadius: 10, 
+								}}
+							>
+								Action
+								<KeyboardArrowDown 
+									style={{ 
+										transform: `rotate(${openAction ? "180" : "0"}deg)`,
+										transition: "transform .2s ease-in-out",
+									}} 
+								/>
+							</Button>
+							<Collapse in={openAction}>
+									<div className={styles.actionContent}>
+										<Button
+											variant="contained"
+											color="primary"
+                      component="label"
+                      style={{ textTransform: "none" }}
+										>
+											Import via csv
+                      <input
+                        type="file"
+                        onInput={handleUpload}
+                        hidden
+                      />
+										</Button>
+										{/* <Button
+											variant="contained"
+											color="primary"
+											onClick={() => setOpenManualAdd(true)}
+										>
+											Add manually
+										</Button> */}
+									</div>
+							</Collapse>
+						</div>
+					</ClickAwayListener>
         </div>
         <div className={styles.listContainer}>
           {
@@ -131,8 +216,17 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
                 key={ind}
                 name={student.student_name}
                 id={student.student_id}
-                checked={false}
-                onChange={handleCheckStudent(student.student_id)}
+                showChecked={false}
+                options={(
+									<div className={styles.actionContent}>
+										<Button
+											variant="contained"
+											color="primary"
+										>
+											More details
+										</Button>
+									</div>
+								)}
               />
             ))
           }
@@ -142,4 +236,6 @@ const StudentAdmin: React.FC<StudentAdminProps> = () => {
   )
 }
 
-export default StudentAdmin;
+const ConnectedStudentAdmin: React.FC<ConnectedStudentAdminProps> = connect(null, { addAlert })(StudentAdmin);
+
+export default ConnectedStudentAdmin;

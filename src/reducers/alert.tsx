@@ -35,9 +35,6 @@ const alertReducer = (alert: AlertProps = defaultAlert, action: Action<AlertActi
   switch (action.type) {
     case ALERT_ACTION_TYPES.add: {
       const { type, message } = action.data;
-
-      console.log('add', type, message);
-
       alert = [...alert, { type, message }];
       window.setTimeout(() => store.dispatch(popAlert()), alertDuration);
       return alert;

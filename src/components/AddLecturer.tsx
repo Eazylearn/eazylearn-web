@@ -227,7 +227,7 @@ const AddLecturer: React.FC<AddLecturerProps> = ({
                   checked={lecturer.checked}
                   onChange={handleCheckLecturer(lecturer.lecturer_id)}
                   showChecked
-                  showAction={false}
+                  showOptions={false}
                 />
               ))
             }

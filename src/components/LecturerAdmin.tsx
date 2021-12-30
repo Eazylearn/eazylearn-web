@@ -1,10 +1,12 @@
-import { Button, CircularProgress, InputAdornment, makeStyles, TextField } from '@material-ui/core';
+import { Button, CircularProgress, ClickAwayListener, Collapse, InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import { KeyboardArrowDown, Search } from '@material-ui/icons';
-import React, { ChangeEvent, ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react';
+import React, { ChangeEvent, ChangeEventHandler, FormEvent, FormEventHandler, MouseEventHandler, useEffect, useState } from 'react';
 import { getAllLecturers } from '../utils/api';
+import { csvToLecturerList } from '../utils/helpers';
 import { CourseLecturer } from '../utils/types';
 import LecturerItem from './list-item/lecturer';
-
+import { addAlert } from '../reducers/alert';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -21,6 +23,7 @@ const useStyles = makeStyles(theme => ({
     padding: 40,
   },
   toolContainer: {
+		position: "relative",
     display: "flex",
     width: "100%",
     flexDirection: "row",
@@ -36,6 +39,27 @@ const useStyles = makeStyles(theme => ({
       boxShadow: "0px 3px 3px rgba(49, 133, 252, 0.24)",
     },
   },
+	actionContainer: {
+		position: "absolute",
+		top: 0,
+		right: 0,
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "flex-end",
+	},
+	actionContent: {
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "stretch",
+
+		"& button": {
+			fontWeight: "bold",
+			textTransform: "none",
+			"& span": {
+				justifyContent: "flex-end",
+			}
+		}
+	},
   listContainer: {
     width: "100%",
     position: "relative",
@@ -46,17 +70,29 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-interface LecturerAdminProps {
+interface ConnectedLecturerAdminProps {
+}
+
+interface LecturerAdminStateProps {
 
 }
 
-const LecturerAdmin: React.FC<LecturerAdminProps> = () => {
+interface LecturerAdminDispatchProps {
+  addAlert: (type: "success" | "error", message: string) => void,
+}
+
+interface LecturerAdminProps extends ConnectedLecturerAdminProps, LecturerAdminStateProps, LecturerAdminDispatchProps {}
+
+const LecturerAdmin: React.FC<LecturerAdminProps> = ({
+  addAlert,
+}) => {
   const styles = useStyles();
 
   const [lecturerList, setLecturerList] = useState< Array<CourseLecturer> >([]);
   const [shownList, setShownList] = useState< Array<CourseLecturer> >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchTimeout, setSearchTimeout] = useState<number>(0);
+	const [openAction, setOpenAction] = useState<boolean>(false);
 
   const searchHandler = (text: string) => (value: CourseLecturer): boolean => {
     return value.lecturer_name.toLowerCase().indexOf(text.toLowerCase()) !== -1;
@@ -79,17 +115,33 @@ const LecturerAdmin: React.FC<LecturerAdminProps> = () => {
         setShownList(res.lecturers);
       }
       else {
-        // alert error message
+        addAlert("error", "Error occured while getting lecturer list.");
       }
 
       setLoading(false);
     }
 
     _getLecturers();
-  }, [])
+  }, [addAlert])
 
   const handleClickAction: MouseEventHandler = () => {
-    // TODO
+		setOpenAction(prevState => !prevState);
+  }
+
+  const handleUpload: FormEventHandler = async (event: FormEvent) => {
+    const files = (event.target as HTMLInputElement).files;
+    if (files === null || files.length === 0) {
+      addAlert("error", "File not found.");
+      return;
+    }
+    const text = await files[0].text();
+    const parsed = csvToLecturerList(text);
+    if (typeof parsed === "string") {
+      addAlert("error", parsed);
+      return
+    }
+
+    console.log(parsed);
   }
 
   return (
@@ -109,14 +161,51 @@ const LecturerAdmin: React.FC<LecturerAdminProps> = () => {
             placeholder="Search"
             className={styles.searchBar}
           />
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleClickAction}
-            style={{ fontWeight: "bold", borderRadius: 10 }}
-          >
-            Action <KeyboardArrowDown />
-          </Button>
+					<ClickAwayListener onClickAway={() => setOpenAction(false)}>
+						<div className={styles.actionContainer}>
+							<Button
+								variant="contained"
+								color="secondary"
+								onClick={handleClickAction}
+								style={{ 
+									fontWeight: "bold", 
+									borderRadius: 10, 
+								}}
+							>
+								Action
+								<KeyboardArrowDown 
+									style={{ 
+										transform: `rotate(${openAction ? "180" : "0"}deg)`,
+										transition: "transform .2s ease-in-out",
+									}} 
+								/>
+							</Button>
+							<Collapse in={openAction}>
+									<div className={styles.actionContent}>
+										<Button
+											variant="contained"
+											color="primary"
+                      component="label"
+                      style={{ textTransform: "none" }}
+										>
+											Import via csv
+                      <input
+                        type="file"
+                        onInput={handleUpload}
+                        hidden
+                      />
+										</Button>
+										{/* <Button
+											variant="contained"
+											color="primary"
+											onClick={() => setOpenManualAdd(true)}
+										>
+											Add manually
+										</Button> */}
+									</div>
+							</Collapse>
+						</div>
+					</ClickAwayListener>
         </div>
         <div className={styles.listContainer}>
           {
@@ -126,6 +215,16 @@ const LecturerAdmin: React.FC<LecturerAdminProps> = () => {
               <LecturerItem
                 key={ind}
                 name={lecturer?.lecturer_name || ""}
+                options={(
+									<div className={styles.actionContent}>
+										<Button
+											variant="contained"
+											color="primary"
+										>
+											More details
+										</Button>
+									</div>
+								)}
               />
             ))
           }
@@ -135,4 +234,6 @@ const LecturerAdmin: React.FC<LecturerAdminProps> = () => {
   )
 }
 
-export default LecturerAdmin;
+const ConnectedLecturerAdmin: React.FC<ConnectedLecturerAdminProps> = connect(null, { addAlert })(LecturerAdmin);
+
+export default ConnectedLecturerAdmin;

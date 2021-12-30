@@ -11,7 +11,7 @@ const checkType = (value: string, type: "string" | "number"): boolean => {
     case "string":
       return typeof value === "string";
     case "number":
-      return parseInt(value) !== NaN;
+      return isNaN(parseInt(value));
     default:
       return false;
   }
@@ -19,7 +19,7 @@ const checkType = (value: string, type: "string" | "number"): boolean => {
 
 const checkCSVtype = (lines: string[][], csvAttrs: CSVAttr[]): boolean => {
   return (
-    csvAttrs.reduce<boolean>((cur, attr, ind) => cur && lines[0][ind] !== attr.name, true) && // Check csv header
+    csvAttrs.reduce<boolean>((cur, attr, ind) => cur && lines[0][ind] === attr.name, true) && // Check csv header
     lines.slice(1).reduce<boolean>((cur, line) => cur && csvAttrs.reduce<boolean>((cur, attr, ind) => cur && checkType(line[ind], attr.type), true), true) // Check csv data type
   );
 }
@@ -53,12 +53,12 @@ const studentCSVAttr: CSVAttr[] = [
 ]
 
 export const csvToStudentList = (csv: string): StudentAccount[] | string => {
-  const lines = csv.split("\n").map(line => line.split(','));
+  const lines = csv.trim().split("\n").map(line => line.split(','));
   if (!checkCSVtype(lines, studentCSVAttr)) {
     return "CSV file format is invalid";
   }
 
-  const res: StudentAccount[] = lines.map(line => ({
+  const res: StudentAccount[] = lines.slice(1).map(line => ({
     student_name: line[0],
     student_id: line[1],
     class_id: line[2],
@@ -93,12 +93,12 @@ const lecturerCSVAttr: CSVAttr[] = [
 ]
 
 export const csvToLecturerList = (csv: string): LecturerAccount[] | string => {
-  const lines = csv.split("\n").map(line => line.split(','));
-  if (checkCSVtype(lines, lecturerCSVAttr)) {
+  const lines = csv.trim().split("\n").map(line => line.split(','));
+  if (!checkCSVtype(lines, lecturerCSVAttr)) {
     return "CSV file format is invalid";
   }
 
-  const res: LecturerAccount[] = lines.map(line => ({
+  const res: LecturerAccount[] = lines.slice(1).map(line => ({
     lecturer_name: line[0],
     lecturer_id: line[1],
     account_id: line[3],

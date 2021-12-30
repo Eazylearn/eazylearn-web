@@ -37,6 +37,19 @@ const useLecturerListStyle = makeStyles(theme => ({
   listContainer: {
     width: "100%",
   },
+	actionContent: {
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "stretch",
+
+		"& button": {
+			fontWeight: "bold",
+			textTransform: "none",
+			"& span": {
+				justifyContent: "flex-end",
+			}
+		}
+	},
 }))
 
 interface ConnectedLecturerListProps {
@@ -79,7 +92,6 @@ const LecturerList: React.FC<LecturerListProps> = ({
 		else {
 			addAlert("error", "Error occured while removing students.");
 		}
-
   }
 
   return (
@@ -111,7 +123,23 @@ const LecturerList: React.FC<LecturerListProps> = ({
               <LecturerItem
                 key={ind}
                 name={lecturer.lecturer_name}
-                action={() => handleRemove(lecturer.lecturer_id)}
+                options={(
+									<div className={styles.actionContent}>
+										<Button
+											variant="contained"
+											color="primary"
+											onClick={() => handleRemove(lecturer.lecturer_id)}
+										>
+											Remove from course
+										</Button>
+										<Button
+											variant="contained"
+											color="primary"
+										>
+											More details
+										</Button>
+									</div>
+								)}
               />
             ))
           }
