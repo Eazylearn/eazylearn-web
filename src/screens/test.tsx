@@ -43,7 +43,7 @@ const Test: React.FC<TestProps> = ({
   }
 
   const handleUpload: FormEventHandler = (e: FormEvent) => {
-    // console.log((e.target as HTMLInputElement).files[0]);
+    // sth sth
   }
 
   return (

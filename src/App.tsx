@@ -51,7 +51,7 @@ function App() {
             <Route path="/login" component={Login} />
             <Route path="/forgot-password" component={ForgotPassword} />
             <Route path="/course/:id" component={CourseConfig} />
-            <Route path="/test" component={Test} />
+            {/* <Route path="/test" component={Test} /> */}
             <Route path="*">
               <Redirect to="/"/>
             </Route>

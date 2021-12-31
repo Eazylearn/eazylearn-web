@@ -62,8 +62,6 @@ const HeaderAdmin: React.FC<HeaderAdminProps> = function ({
   const classes = useStyles();
   const [tabValue, setTabValue] = useState(0);
 
-  useEffect(() => console.log(auth), [auth]);
-
   const changeTab = function (e: ChangeEvent<{}>, val: any) {
     setTabValue(val);
     onChangeTab(val);

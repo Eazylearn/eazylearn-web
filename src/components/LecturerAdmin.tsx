@@ -140,8 +140,6 @@ const LecturerAdmin: React.FC<LecturerAdminProps> = ({
       addAlert("error", parsed);
       return
     }
-
-    console.log(parsed);
     
     const payload = parsed.map(lecturer => ({
       username: lecturer.lecturer_id,

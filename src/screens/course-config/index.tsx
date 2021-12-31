@@ -160,6 +160,8 @@ const CourseConfig: React.FC<CourseConfigProps> = ({
     const payload = {
       id: courseID,
       name: courseName,
+      academicYear: new Date().getFullYear().toString(),
+      semester: 0,
     }
 
     setSaving(true);
@@ -171,8 +173,8 @@ const CourseConfig: React.FC<CourseConfigProps> = ({
 
     if (res.status === "OK") {
       if (id === "new") {
-        addAlert("success", "Create course successfully!");
         history.push(`/course/${courseID}`);
+        addAlert("success", "Create course successfully!");
       }
       else {
         addAlert("success", "Update course successfully!");
