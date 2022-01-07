@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import { connectRouter } from 'connected-react-router';
 import authReducer, { AuthProps } from "./auth";
 import alertReducer, { AlertProps } from "./alert";
+import { LocationState } from "history";
 
 export type Action <D> = {
   type: string,
@@ -17,7 +18,7 @@ const createRootReducer = (history: any) => combineReducers({
   // Reducers here
   auth: authReducer,
   alert: alertReducer,
-  router: connectRouter(history),
+  router: connectRouter<LocationState>(history),
 });
 
 export default createRootReducer;

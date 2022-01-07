@@ -1,5 +1,5 @@
-import { createBrowserHistory } from 'history';
+import { createBrowserHistory, History, LocationState } from 'history';
 
-const history = createBrowserHistory();
+const history: History<LocationState> = createBrowserHistory<LocationState>();
 
 export default history;

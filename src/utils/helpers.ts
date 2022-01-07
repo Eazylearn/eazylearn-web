@@ -107,3 +107,12 @@ export const csvToLecturerList = (csv: string): LecturerAccount[] | string => {
 
   return res;
 }
+
+export const getDataFromToken = (token: string) => {
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  }
+  catch (err) {
+    console.error(err);
+  }
+}

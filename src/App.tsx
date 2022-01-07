@@ -11,12 +11,13 @@ import history from './utils/history';
 import { saveAuth } from './reducers/auth';
 import { getAccountInfo } from './utils/api';
 // Import views
-import HomeScreen from './screens/HomeScreen';
+import HomeScreen from './screens/home-screen';
 import Login from './screens/login';
 import ForgotPassword from './screens/forgot-password';
 import CourseConfig from './screens/course-config';
-import Test from './screens/test';
+// import Test from './screens/test';
 import AlertContainer from './components/alert';
+import { getDataFromToken } from './utils/helpers';
 
 function App() {
 
@@ -24,18 +25,21 @@ function App() {
     const _getAccountInfo = async () => {
       const token: string | null = window.localStorage.getItem('access_token');
       if (token === null || token.split('.').length !== 3) {
-        return store.dispatch(saveAuth("", ""));
+        window.localStorage.removeItem('access_token');
+        return store.dispatch(saveAuth());
       }
 
-      const userInfo: any = JSON.parse(atob(token.split('.')[1]));
-      if (!userInfo.hasOwnProperty('account_id')) {
-        return store.dispatch(saveAuth("", ""));
+      const userInfo: any = getDataFromToken(token);
+      if (!userInfo.hasOwnProperty('account_id') || !userInfo.hasOwnProperty('type')) {
+        window.localStorage.removeItem('access_token');
+        return store.dispatch(saveAuth());
       }
 
       const username: string = userInfo.account_id;
+      const type: number = userInfo.type;
       const res = await getAccountInfo(username);
       if (res.status === "OK") {
-        return store.dispatch(saveAuth(token, username));
+        return store.dispatch(saveAuth(token, username, type));
       }
     }
 

@@ -1,10 +1,10 @@
 import { makeStyles } from "@material-ui/core";
 import React, { useState } from "react";
-import BackgroundGradient from "../components/BackgroundGradient";
-import CourseAdmin from "../components/CourseAdmin";
-import HeaderAdmin from "../components/HeaderAdmin";
-import LecturerAdmin from "../components/LecturerAdmin";
-import StudentAdmin from "../components/StudentAdmin";
+import BackgroundGradient from "../../components/BackgroundGradient";
+import CourseAdmin from "../../components/CourseAdmin";
+import HeaderAdmin from "../../components/HeaderAdmin";
+import LecturerAdmin from "../../components/LecturerAdmin";
+import StudentAdmin from "../../components/StudentAdmin";
 
 const useStyles = makeStyles({
   body: {
@@ -27,7 +27,7 @@ const RandomScreen: React.FC<RandomScreenProps> = (props: RandomScreenProps) => 
   }
 }
 
-const HomeScreen = () => {
+const AdminHomeScreen = () => {
   const classes = useStyles();
   //  0: Course    1: Lecturer     2: Student
   const [tabValue, setTabValue] = useState(0);
@@ -60,4 +60,4 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+export default AdminHomeScreen;

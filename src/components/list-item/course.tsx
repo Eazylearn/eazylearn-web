@@ -39,6 +39,7 @@ interface CourseItemProps {
   numStudents: number,
   numPending: number,
   onClick: MouseEventHandler,
+  disabled?: boolean
 }
 
 const CourseItem: React.FC<CourseItemProps> = ({
@@ -47,12 +48,13 @@ const CourseItem: React.FC<CourseItemProps> = ({
   lecturers,
   numStudents,
   numPending,
-  onClick
+  onClick,
+  disabled = false,
 }) => {
   const styles = useStyles();
 
   return (
-    <div className={styles.container} onClick={onClick}>
+    <div className={styles.container} onClick={disabled ? undefined : onClick}>
       <div className={styles.content}>
         <Typography style={{ fontWeight: "bold" }} variant="h4" color="initial">
           {id} - {name}

@@ -6,6 +6,9 @@ import { Course } from '../utils/types';
 import CourseItem from './list-item/course';
 import history from '../utils/history';
 import { Pagination } from '@material-ui/lab';
+import { AuthProps } from '../reducers/auth';
+import { connect } from 'react-redux';
+import { RootStateProps } from '../reducers';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -67,11 +70,23 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-interface CourseAdminProps {
+interface ConnectedCourseAdminProps {
 
 }
 
-const CourseAdmin: React.FC<CourseAdminProps> = () => {
+interface CourseAdminStateProps {
+  auth: AuthProps
+}
+
+interface CourseAdminDispatchProps {
+
+}
+
+interface CourseAdminProps extends ConnectedCourseAdminProps, CourseAdminStateProps, CourseAdminDispatchProps {};
+
+const CourseAdmin: React.FC<CourseAdminProps> = ({
+  auth,
+}) => {
   const styles = useStyles();
 
   const [courseList, setCourseList] = useState< Array<Course> >([]);
@@ -186,6 +201,7 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
               <CircularProgress color="secondary" />
             ) : courseList.map((course, ind) => (
               <CourseItem
+                disabled={!(auth.type === 0 || auth.type === 1)}
                 key={ind}
                 id={course.course_id}
                 name={course.course_name}
@@ -211,4 +227,6 @@ const CourseAdmin: React.FC<CourseAdminProps> = () => {
   )
 }
 
-export default CourseAdmin;
+const ConnectedCourseAdmin: React.FC<ConnectedCourseAdminProps> = connect((state: RootStateProps) => ({ auth: state.auth }), {})(CourseAdmin);
+
+export default ConnectedCourseAdmin;

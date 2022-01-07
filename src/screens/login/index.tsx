@@ -26,6 +26,7 @@ import { addAlert } from '../../reducers/alert';
 import { RootStateProps } from '../../reducers';
 import history from '../../utils/history';
 import Input from '../../components/Input';
+import { getDataFromToken } from '../../utils/helpers';
 
 const useStyles = makeStyles(theme => ({
   loginContainer: {
@@ -96,7 +97,7 @@ interface LoginStateProps {
 
 interface LoginDispatchProps {
   saveAuth: typeof saveAuth,
-  addAlert: (type: "success" | "error", message: string) => void,
+  addAlert: typeof addAlert,
 }
 
 const Login: React.FC<LoginProps> = ({
@@ -133,15 +134,23 @@ const Login: React.FC<LoginProps> = ({
 
     const res = await login(payload);
     if (res.status === "OK") {
+      const userInfo = getDataFromToken(res.token);
+      if (!userInfo.hasOwnProperty('type') || !(userInfo?.type === 0 || userInfo?.type === 1)) {
+        addAlert("error", "This account is not authorized for this site.");
+        return;
+      }
       window.localStorage.setItem("access_token", res.token);
-      saveAuth(res.token, username);
+      saveAuth(res.token, username, userInfo.type);
       history.push("/");
       addAlert("success", "Log in successfully!");
+    }
+    else {
+      addAlert("error", "Username or password is incorrect.");
     }
   }
 
   useEffect(() => {
-    if (auth.token !== "") {
+    if (auth.token) {
       history.push("/");
       addAlert("error", "You have already logged in.");
     }

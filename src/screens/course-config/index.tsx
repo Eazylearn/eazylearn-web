@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ChangeEventHandler, useEffect, useState } from 'react';
+import React, { ChangeEvent, ChangeEventHandler, useCallback, useEffect, useState } from 'react';
 import { makeStyles, TextField, Typography, Button, IconButton, CircularProgress } from '@material-ui/core';
 import { useParams } from 'react-router';
 import { createCourse, getCourse, updateCourse } from '../../utils/api';
@@ -108,7 +108,7 @@ const CourseConfig: React.FC<CourseConfigProps> = ({
   const [courseSem, setCourseSem] = useState<number>(course?.semester || 0);
   const [saving, setSaving] = useState<boolean>(false);
 
-  const _getCourse = async (id: string) => {
+  const _getCourse = useCallback(async (id: string) => {
     try {
       const res = await getCourse(id);
       if (res.status === "OK") {
@@ -120,13 +120,14 @@ const CourseConfig: React.FC<CourseConfigProps> = ({
       }
       else {
         history.push("/");
+        addAlert("error", "Course is missing or you are not allowed to access.");
       }
     }
     catch (err) {
-      console.error(err);
       history.push("/");
+      addAlert("error", "Error occurred.");
     }
-  }
+  }, [addAlert]);
 
   useEffect(() => {
     if (id) {
@@ -142,7 +143,7 @@ const CourseConfig: React.FC<CourseConfigProps> = ({
           lecturers: [],
         })
     }
-  }, [id]);
+  }, [id, _getCourse]);
   
   const handleChangeName: ChangeEventHandler = (event: ChangeEvent) => {
     setCourseName((event.target as HTMLInputElement).value);
